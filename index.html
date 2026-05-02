@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bikkriya</title>
+<link href="https://fonts.googleapis.com/css2?family=Galada&family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1A1A1D;--deep:#3B1C32;--mid:#6A1E55;--accent:#A64D79;--light:#D4849E;--white:#F5E6EE;--glow:rgba(166,77,121,0.35)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--white);font-family:'Hind Siliguri',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 20% 20%,rgba(106,30,85,0.25) 0%,transparent 70%),radial-gradient(ellipse 50% 50% at 80% 80%,rgba(59,28,50,0.4) 0%,transparent 70%);pointer-events:none;z-index:0}
+.particle{position:fixed;border-radius:50%;background:var(--accent);opacity:0.06;pointer-events:none;z-index:0;animation:floatup linear infinite}
+@keyframes floatup{0%{transform:translateY(110vh) scale(0);opacity:0}10%{opacity:0.08}90%{opacity:0.08}100%{transform:translateY(-10vh) scale(1);opacity:0}}
+/* screens */
+.screen{display:none;position:relative;z-index:10;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+/* navbar */
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:rgba(59,28,50,0.5);backdrop-filter:blur(12px);border-bottom:1px solid rgba(166,77,121,0.2);position:sticky;top:0;z-index:100}
+.nav-brand{display:flex;flex-direction:column}
+.nav-title{font-family:'Galada',cursive;font-size:1.5rem;background:linear-gradient(135deg,var(--white),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.nav-by{font-size:0.58rem;color:var(--light);margin-top:1px;letter-spacing:0.5px}
+.nav-back{background:rgba(166,77,121,0.2);border:1px solid rgba(166,77,121,0.35);border-radius:9px;padding:7px 14px;color:var(--light);font-size:0.8rem;cursor:pointer;font-family:'Hind Siliguri',sans-serif;transition:background 0.2s}
+.nav-back:hover{background:rgba(166,77,121,0.35)}
+/* home */
+.home-hero{text-align:center;padding:46px 20px 22px}
+.home-title{font-family:'Galada',cursive;font-size:clamp(3.2rem,14vw,6.2rem);background:linear-gradient(135deg,var(--white) 0%,var(--light) 50%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.home-by{font-size:0.7rem;color:var(--light);margin-top:5px;opacity:0.7;letter-spacing:1px}
+.hdiv{width:90px;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:13px auto}
+.home-sub{font-size:0.86rem;color:var(--light);opacity:0.72;max-width:310px;margin:0 auto}
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;padding:22px 18px 18px;max-width:540px;margin:0 auto;width:100%}
+.hcard{background:rgba(59,28,50,0.4);border:1px solid rgba(166,77,121,0.22);border-radius:17px;padding:20px 13px;text-align:center;cursor:pointer;transition:all 0.24s;backdrop-filter:blur(8px)}
+.hcard:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 8px 26px rgba(166,77,121,0.28)}
+.hcard .hico{font-size:2rem;display:block;margin-bottom:9px}
+.hcard .hlbl{font-size:0.88rem;font-weight:600;color:var(--white)}
+.hcard .hsub{font-size:0.68rem;color:var(--light);margin-top:4px;opacity:0.72}
+.hcard.feat{grid-column:span 2;background:linear-gradient(135deg,rgba(106,30,85,0.38),rgba(59,28,50,0.5));border-color:rgba(166,77,121,0.38)}
+/* content */
+.sc{padding:16px 18px;max-width:660px;margin:0 auto;width:100%;flex:1}
+.stitle{font-size:0.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:13px;display:flex;align-items:center;gap:9px}
+.stitle::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(166,77,121,0.4),transparent)}
+/* chapter buttons */
+.chbtn{width:100%;display:flex;align-items:center;gap:13px;padding:12px 15px;background:rgba(59,28,50,0.32);border:1px solid rgba(166,77,121,0.18);border-radius:13px;color:var(--white);cursor:pointer;margin-bottom:9px;transition:all 0.2s;font-family:'Hind Siliguri',sans-serif;text-align:left}
+.chbtn:hover{border-color:var(--accent);background:rgba(106,30,85,0.28);transform:translateX(4px)}
+.chico{width:34px;height:34px;background:rgba(166,77,121,0.22);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.chname{font-size:0.9rem;font-weight:600}
+.chcnt{font-size:0.65rem;color:var(--light);opacity:0.72;margin-top:2px}
+.charr{margin-left:auto;color:var(--accent);font-size:1.05rem}
+/* reaction cards */
+.rxncard{background:rgba(59,28,50,0.28);border:1px solid rgba(166,77,121,0.15);border-radius:12px;padding:13px 15px;margin-bottom:9px;transition:border-color 0.2s}
+.rxncard:hover{border-color:rgba(166,77,121,0.42)}
+.rxneq{font-size:0.88rem;color:var(--white);line-height:1.6;font-weight:500}
+.rxnmeta{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.mtag{font-size:0.64rem;padding:2px 9px;border-radius:20px;border:1px solid rgba(166,77,121,0.32);color:var(--light);background:rgba(166,77,121,0.09)}
+.mtag.cond{border-color:rgba(212,132,158,0.38);color:#e0b0c0}
+.rnum{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;background:rgba(166,77,121,0.22);border-radius:5px;font-size:0.62rem;font-weight:700;color:var(--accent);margin-right:6px;vertical-align:middle;flex-shrink:0}
+/* pathfinder */
+.glass{background:rgba(59,28,50,0.32);border:1px solid rgba(166,77,121,0.22);border-radius:17px;padding:20px 18px;backdrop-filter:blur(12px)}
+.selrow{display:flex;align-items:center;gap:11px;flex-wrap:wrap}
+.selgrp{flex:1;min-width:160px}
+.selgrp label{display:block;font-size:0.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:7px}
+.selgrp select{width:100%;padding:10px 11px;background:rgba(26,26,29,0.85);border:1px solid rgba(166,77,121,0.38);border-radius:10px;color:var(--white);font-family:'Hind Siliguri',sans-serif;font-size:0.86rem;outline:none;cursor:pointer;transition:border-color 0.25s,box-shadow 0.25s;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23A64D79' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 9px center;padding-right:28px}
+.selgrp select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--glow)}
+.selgrp select:disabled{opacity:0.38;cursor:not-allowed;border-color:rgba(166,77,121,0.12)}
+.selgrp select option{background:#2a1225;color:var(--white)}
+.arricon{font-size:1.4rem;color:var(--accent);flex-shrink:0;margin-top:21px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:0.45;transform:scale(1)}50%{opacity:1;transform:scale(1.14)}}
+.btnfind{display:block;width:100%;margin-top:15px;padding:12px;background:linear-gradient(135deg,var(--mid),var(--accent));border:none;border-radius:11px;color:var(--white);font-family:'Hind Siliguri',sans-serif;font-size:0.96rem;font-weight:600;cursor:pointer;transition:transform 0.2s,box-shadow 0.25s;box-shadow:0 4px 16px rgba(166,77,121,0.38)}
+.btnfind:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(166,77,121,0.55)}
+/* path result */
+.restitle{font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:13px;display:flex;align-items:center;gap:9px}
+.restitle::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(166,77,121,0.48),transparent)}
+.pathwrap{display:flex;flex-direction:column;align-items:center}
+.stepw{display:flex;flex-direction:column;align-items:center;opacity:0;transform:translateY(16px);animation:stepIn 0.42s forwards;width:100%}
+@keyframes stepIn{to{opacity:1;transform:translateY(0)}}
+.cbubble{background:linear-gradient(135deg,rgba(106,30,85,0.48),rgba(59,28,50,0.58));border:1.5px solid rgba(166,77,121,0.48);border-radius:12px;padding:11px 17px;text-align:center;width:100%;max-width:460px}
+.cname{font-size:0.96rem;font-weight:600;color:var(--white)}
+.cstart{border-color:rgba(212,132,158,0.68)}
+.cend{border-color:rgba(166,77,121,0.88);background:linear-gradient(135deg,rgba(166,77,121,0.28),rgba(106,30,85,0.48))}
+.rxnarrow{display:flex;flex-direction:column;align-items:center;margin:3px 0;width:100%;max-width:460px}
+.rxnbox{background:rgba(26,26,29,0.68);border:1px dashed rgba(166,77,121,0.32);border-radius:9px;padding:6px 13px;text-align:center;font-size:0.74rem;color:var(--light);margin-bottom:3px;max-width:340px;line-height:1.5}
+.rxnbox .reag{color:#e0b0c0;font-weight:500}
+.arrdn{width:2px;height:22px;background:linear-gradient(180deg,var(--accent),rgba(166,77,121,0.28));position:relative}
+.arrdn::after{content:'▼';position:absolute;bottom:-13px;left:50%;transform:translateX(-50%);color:var(--accent);font-size:10px}
+.nopath{text-align:center;padding:24px;color:var(--light);opacity:0.68;font-size:0.88rem}
+.nopath .npico{font-size:2rem;display:block;margin-bottom:9px}
+.statsbar{display:flex;gap:9px;margin-bottom:13px;flex-wrap:wrap}
+.schip{background:rgba(106,30,85,0.28);border:1px solid rgba(166,77,121,0.28);border-radius:30px;padding:4px 12px;font-size:0.7rem;color:var(--light)}
+.schip span{color:var(--white);font-weight:600}
+.altpaths{margin-top:20px;border-top:1px solid rgba(166,77,121,0.18);padding-top:15px}
+.alttitle{font-size:0.65rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:9px}
+.altitem{background:rgba(26,26,29,0.48);border:1px solid rgba(166,77,121,0.18);border-radius:8px;padding:8px 12px;margin-bottom:7px;font-size:0.76rem;color:var(--light);line-height:1.7}
+.ctag{display:inline-block;background:rgba(166,77,121,0.18);border:1px solid rgba(166,77,121,0.32);border-radius:5px;padding:1px 6px;font-size:0.7rem;color:#e0b0c0;margin:0 2px}
+/* periodic table */
+.ptwrap{overflow-x:auto;padding:4px 12px 14px}
+.ptable{display:grid;grid-template-columns:repeat(18,minmax(35px,1fr));gap:3px;min-width:660px}
+.el{border-radius:6px;padding:4px 2px;text-align:center;cursor:pointer;transition:all 0.16s;border:1px solid rgba(255,255,255,0.06);min-height:42px}
+.el:hover{transform:scale(1.13);z-index:20;border-color:var(--accent) !important;box-shadow:0 4px 14px rgba(166,77,121,0.48)}
+.el .esym{font-size:0.8rem;font-weight:700;line-height:1.15}
+.el .enum{font-size:0.5rem;opacity:0.62;line-height:1}
+.el .enam{font-size:0.4rem;opacity:0.58;line-height:1;overflow:hidden;white-space:nowrap}
+.elempty{min-height:42px}
+.ptlegend{display:flex;flex-wrap:wrap;gap:7px;padding:0 12px 11px;justify-content:center}
+.legitem{display:flex;align-items:center;gap:4px;font-size:0.62rem;color:var(--light)}
+.legdot{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+/* modal */
+.moverlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.72);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
+.moverlay.open{display:flex}
+.mbox{background:linear-gradient(135deg,#2a1225,#1a1a1d);border:1px solid rgba(166,77,121,0.48);border-radius:19px;padding:24px 20px;max-width:330px;width:90%;position:relative;box-shadow:0 20px 55px rgba(0,0,0,0.7)}
+.mclose{position:absolute;top:11px;right:13px;background:rgba(166,77,121,0.18);border:none;border-radius:7px;padding:4px 9px;color:var(--light);cursor:pointer;font-size:0.95rem;font-family:'Hind Siliguri',sans-serif}
+.msym{font-size:3.6rem;font-weight:700;text-align:center;background:linear-gradient(135deg,var(--white),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1}
+.mname{text-align:center;font-size:1.05rem;font-weight:600;margin:5px 0 2px;color:var(--white)}
+.msub{text-align:center;font-size:0.72rem;color:var(--light);opacity:0.78;margin-bottom:13px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mitem{background:rgba(59,28,50,0.42);border-radius:8px;padding:8px 10px}
+.mlbl{font-size:0.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:2px}
+.mval{font-size:0.84rem;font-weight:600;color:var(--white)}
+/* footer */
+footer{position:relative;z-index:10;text-align:center;padding:0 18px 24px;opacity:0.48}
+footer .fln{width:60px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:0 auto 10px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--mid);border-radius:3px}
+@media(max-width:460px){.home-grid{grid-template-columns:1fr 1fr}.selrow{flex-direction:column}.arricon{margin-top:0;transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+
+<!-- ═══ HOME ═══ -->
+<div id="s-home" class="screen active">
+  <div class="home-hero">
+    <div class="home-title">Bikkriya</div>
+    <div class="home-by">An Application Made for Chemistry</div>
+    <div class="hdiv"></div>
+    <div class="home-sub">রসায়নের গুরুত্বপূর্ণ বিক্রিয়াসমূহ এক জায়গায়</div>
+  </div>
+  <div class="home-grid">
+    <div class="hcard feat" onclick="goTo('s-chapters')">
+      <span class="hico">📖</span>
+      <div class="hlbl">অধ্যায়ভিত্তিক বিক্রিয়া</div>
+      <div class="hsub">SSC পর্যায়ের সকল অধ্যায়</div>
+    </div>
+    <div class="hcard" onclick="goTo('s-pathfinder')">
+      <span class="hico">🧭</span>
+      <div class="hlbl">পাথফাইন্ডার</div>
+      <div class="hsub">যৌগ থেকে যৌগের পথ</div>
+    </div>
+    <div class="hcard" onclick="goTo('s-periodic')">
+      <span class="hico">⚗️</span>
+      <div class="hlbl">পর্যায় সারণি</div>
+      <div class="hsub">মৌল সম্পর্কে বিস্তারিত</div>
+    </div>
+  </div>
+  <footer><div class="fln"></div>
+    <p style="font-size:0.64rem;color:var(--light);letter-spacing:0.8px">Made by <span style="color:var(--accent)">H.M.Mostakim</span></p>
+    <p style="font-size:0.6rem;color:var(--light);margin-top:3px">ABA &copy;2026</p>
+  </footer>
+</div>
+
+<!-- ═══ CHAPTERS ═══ -->
+<div id="s-chapters" class="screen">
+  <nav class="navbar">
+    <div class="nav-brand"><div class="nav-title">Bikkriya</div><div class="nav-by">by Mostakim</div></div>
+    <button class="nav-back" onclick="goTo('s-home')">&#8592; Back</button>
+  </nav>
+  <div class="sc">
+    <div class="stitle" style="margin-top:6px">অধ্যায় বেছে নিন</div>
+    <div id="ch-list"></div>
+  </div>
+  <footer><div class="fln"></div>
+    <p style="font-size:0.64rem;color:var(--light);letter-spacing:0.8px">Made by <span style="color:var(--accent)">H.M.Mostakim</span></p>
+    <p style="font-size:0.6rem;color:var(--light);margin-top:3px">ABA &copy;2026</p>
+  </footer>
+</div>
+
+<!-- ═══ REACTIONS ═══ -->
+<div id="s-reactions" class="screen">
+  <nav class="navbar">
+    <div class="nav-brand"><div class="nav-title">Bikkriya</div><div class="nav-by">by Mostakim</div></div>
+    <button class="nav-back" onclick="goTo('s-chapters')">&#8592; অধ্যায়</button>
+  </nav>
+  <div class="sc">
+    <div class="stitle" style="margin-top:6px" id="rxn-title"></div>
+    <div id="rxn-list"></div>
+  </div>
+  <footer><div class="fln"></div>
+    <p style="font-size:0.64rem;color:var(--light);letter-spacing:0.8px">Made by <span style="color:var(--accent)">H.M.Mostakim</span></p>
+    <p style="font-size:0.6rem;color:var(--light);margin-top:3px">ABA &copy;2026</p>
+  </footer>
+</div>
+
+<!-- ═══ PATHFINDER ═══ -->
+<div id="s-pathfinder" class="screen">
+  <nav class="navbar">
+    <div class="nav-brand"><div class="nav-title">Bikkriya</div><div class="nav-by">by Mostakim</div></div>
+    <button class="nav-back" onclick="goTo('s-home')">&#8592; Back</button>
+  </nav>
+  <div class="sc">
+    <div class="stitle" style="margin-top:6px">🧭 পাথফাইন্ডার</div>
+    <div class="glass">
+      <div class="selrow">
+        <div class="selgrp">
+          <label>🔬 শুরুর যৌগ</label>
+          <select id="startSel"><option value="">— বেছে নিন —</option></select>
+        </div>
+        <div class="arricon">&#x21D2;</div>
+        <div class="selgrp">
+          <label>🎯 লক্ষ্য যৌগ</label>
+          <select id="endSel" disabled><option value="">— আগে শুরু বেছে নিন —</option></select>
+        </div>
+      </div>
+      <button class="btnfind" onclick="findPath()">পথ খুঁজুন ✦</button>
+      <div id="pf-result" style="margin-top:18px"></div>
+    </div>
+  </div>
+  <footer><div class="fln"></div>
+    <p style="font-size:0.64rem;color:var(--light);letter-spacing:0.8px">Made by <span style="color:var(--accent)">H.M.Mostakim</span></p>
+    <p style="font-size:0.6rem;color:var(--light);margin-top:3px">ABA &copy;2026</p>
+  </footer>
+</div>
+
+<!-- ═══ PERIODIC TABLE ═══ -->
+<div id="s-periodic" class="screen">
+  <nav class="navbar">
+    <div class="nav-brand"><div class="nav-title">Bikkriya</div><div class="nav-by">by Mostakim</div></div>
+    <button class="nav-back" onclick="goTo('s-home')">&#8592; Back</button>
+  </nav>
+  <div style="padding:13px 13px 3px;position:relative;z-index:10">
+    <div class="stitle">⚗️ পর্যায় সারণি</div>
+    <div class="ptlegend" id="ptlegend"></div>
+  </div>
+  <div class="ptwrap"><div class="ptable" id="ptable"></div></div>
+  <footer><div class="fln"></div>
+    <p style="font-size:0.64rem;color:var(--light);letter-spacing:0.8px">Made by <span style="color:var(--accent)">H.M.Mostakim</span></p>
+    <p style="font-size:0.6rem;color:var(--light);margin-top:3px">ABA &copy;2026</p>
+  </footer>
+</div>
+
+<!-- Element Modal -->
+<div class="moverlay" id="el-modal">
+  <div class="mbox">
+    <button class="mclose" onclick="closeMod()">&#x2715;</button>
+    <div class="msym" id="msym"></div>
+    <div class="mname" id="mname"></div>
+    <div class="msub" id="msub"></div>
+    <div class="mgrid" id="mgrid"></div>
+  </div>
+</div>
+
+<script>
+// nav
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+// particles
+(function(){for(var i=0;i<14;i++){var p=document.createElement('div');p.className='particle';var s=Math.random()*48+10;p.style.width=s+'px';p.style.height=s+'px';p.style.left=(Math.random()*100)+'vw';p.style.animationDuration=(Math.random()*17+12)+'s';p.style.animationDelay=(Math.random()*14)+'s';document.body.appendChild(p);}})();
+
+// ═══════════ CHAPTER DATA ═══════════
+var chapters=[
+  {id:2,name:"পদার্থের অবস্থা",ico:"🌡️",rxns:[
+    {eq:"NH₃ + HCl → NH₄Cl",r:"",c:""},
+    {eq:"কোক + O₂(g) → CO₂(g) + H₂O(g) + তাপশক্তি + আলো",r:"O₂",c:"দহন"}
+  ]},
+  {id:4,name:"পর্যায় সারণি",ico:"📊",rxns:[
+    {eq:"H₂(g) + F₂(g) → 2HF(g)",r:"",c:""},
+    {eq:"H₂(g) + Cl₂(g) → 2HCl(g)",r:"",c:""},
+    {eq:"H₂(g) + Br₂(g) → 2HBr(g)",r:"",c:""},
+    {eq:"H₂(g) + I₂(g) → 2HI(g)",r:"",c:""},
+    {eq:"HF(g) + H₂O(l) → HF(aq)",r:"",c:""},
+    {eq:"HCl(g) + H₂O(l) → HCl(aq)",r:"",c:""},
+    {eq:"HBr(g) + H₂O(l) → HBr(aq)",r:"",c:""},
+    {eq:"HI(g) + H₂O(l) → HI(aq)",r:"",c:""},
+    {eq:"CaCO₃ + 2HF → CaF₂ + CO₂ + H₂O",r:"HF",c:""},
+    {eq:"CaCO₃ + 2HCl → CaCl₂ + CO₂ + H₂O",r:"HCl",c:""}
+  ]},
+  {id:5,name:"রাসায়নিক বন্ধন",ico:"🔗",rxns:[
+    {eq:"Cl + e⁻ → Cl⁻",r:"",c:""},
+    {eq:"Na + Cl → Na⁺ + Cl⁻ = NaCl",r:"",c:""},
+    {eq:"Mg → Mg²⁺ + 2e⁻",r:"",c:""},
+    {eq:"Na → Na⁺ + e⁻",r:"",c:""},
+    {eq:"Ca → Ca²⁺ + 2e⁻",r:"",c:""}
+  ]},
+  {id:6,name:"মোলের ধারণা ও রাসায়নিক গণনা",ico:"🔢",rxns:[
+    {eq:"2H₂ + O₂ → 2H₂O",r:"",c:""},
+    {eq:"C(s) + O₂(g) → CO₂(g)",r:"",c:""},
+    {eq:"2Mg(NO₃)₂ → 2MgO + 4NO₂ + O₂",r:"",c:"Δ"},
+    {eq:"Mg + 2HCl → MgCl₂ + H₂",r:"HCl",c:""},
+    {eq:"Na₂CO₃ + HCl → NaCl + H₂O + CO₂",r:"HCl",c:""},
+    {eq:"Al₂O₃ + 6HCl → 2AlCl₃ + 3H₂O",r:"HCl",c:""},
+    {eq:"2Mg(s) + O₂(g) → 2MgO(s)",r:"O₂",c:"দহন"}
+  ]},
+  {id:7,name:"রাসায়নিক বিক্রিয়া",ico:"⚗️",rxns:[
+    {eq:"CaCO₃(s) → CaO(s) + CO₂(g)",r:"",c:"তাপ"},
+    {eq:"N₂(g) + 3H₂(g) → 2NH₃(g);  ΔH = −92 kJ",r:"Fe",c:"200–250 atm, তাপ"},
+    {eq:"N₂(g) + O₂(g) + 180 kJ ⇌ 2NO(g)",r:"",c:"180 kJ"},
+    {eq:"Fe²⁺ → Fe³⁺ + e⁻",r:"",c:""},
+    {eq:"HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",r:"NaOH",c:""},
+    {eq:"SiCl₄ + H₂O → Si(OH)₄ + 4HCl",r:"H₂O",c:""},
+    {eq:"AlCl₃(s) + 3H₂O(l) → Al(OH)₃(s) + 3HCl(aq)",r:"H₂O",c:""},
+    {eq:"CuSO₄ + 5H₂O → CuSO₄·5H₂O",r:"H₂O",c:""},
+    {eq:"ZnSO₄ + 7H₂O → ZnSO₄·7H₂O",r:"H₂O",c:""},
+    {eq:"CaCl₂ + 6H₂O → CaCl₂·6H₂O",r:"H₂O",c:""},
+    {eq:"2FeCl₂(aq) + Cl₂(g) → 2FeCl₃(aq)",r:"Cl₂",c:""},
+    {eq:"PCl₅ → PCl₃ + Cl₂",r:"",c:"তাপ"},
+    {eq:"Zn(s) + H₂SO₄(l) → ZnSO₄(aq) + H₂(g)",r:"H₂SO₄",c:""},
+    {eq:"CH₄(g) + 2O₂(g) → CO₂(g) + 2H₂O(g) + তাপ",r:"O₂",c:"দহন"},
+    {eq:"S(s) + O₂(g) → SO₂(g) + তাপ",r:"O₂",c:""},
+    {eq:"2Mg(s) + O₂(s) → 2MgO(g) + তাপ",r:"O₂",c:""},
+    {eq:"2H₂(g) + O₂(g) → 2H₂O(g) + তাপ",r:"O₂",c:""},
+    {eq:"NH₄CNO → H₂N-CO-NH₂ (ইউরিয়া)",r:"",c:"তাপ"},
+    {eq:"n(CH₂=CH₂) → (-CH₂-CH₂-)ₙ (পলিথিন)",r:"O₂",c:"200°C, 1200 atm"},
+    {eq:"2Fe + 1.5O₂ + 3H₂O → 2Fe(OH)₃",r:"O₂, H₂O",c:"মরিচা"},
+    {eq:"2Fe(OH)₃ → Fe₂O₃·nH₂O",r:"",c:""},
+    {eq:"CH₄ + 2O₂ → CO₂ + 2H₂O + শক্তি",r:"O₂",c:""}
+  ]},
+  {id:8,name:"রসায়ন ও শক্তি",ico:"⚡",rxns:[
+    {eq:"CH₄(g) + 2O₂ → CO₂ + 2H₂O(g);  ΔH = −890 kJ/mol",r:"O₂",c:""},
+    {eq:"CaO + H₂O → Ca(OH)₂;  ΔH = −63.95 kJ/mol",r:"H₂O",c:""},
+    {eq:"CaCO₃(s) → CaO(s) + CO₂(s);  ΔH = −176.8 kJ/mol",r:"",c:"তাপ"},
+    {eq:"CH₄ + Cl₂ → CH₃Cl + HCl",r:"Cl₂",c:""},
+    {eq:"Zn(s) + CuSO₄(aq) → ZnSO₄(aq) + Cu(s)",r:"CuSO₄",c:""},
+    {eq:"6CO₂ + 12H₂O → C₆H₁₂O₆ + 6O₂ + 6H₂O",r:"ক্লোরোফিল",c:"সালোকসংশ্লেষণ"},
+    {eq:"CO₂ + H₂O → H₂CO₃",r:"H₂O",c:""},
+    {eq:"2SO₂ + O₂ ⇌ 2SO₃",r:"O₂",c:""},
+    {eq:"2SO₃ + 2H₂O → H₂SO₄ (×2)",r:"H₂O",c:""},
+    {eq:"Na⁺ + e⁻ → Na",r:"",c:"ক্যাথোড"},
+    {eq:"NaCl → Na⁺ + Cl⁻",r:"",c:"গলন / দ্রবণ"},
+    {eq:"H₂O → H⁺ + OH⁻",r:"",c:"আয়নায়ন"},
+    {eq:"H⁺ + e⁻ → H;  H + H → H₂",r:"",c:""},
+    {eq:"Cl⁻ → Cl + e⁻;  Cl + Cl → Cl₂",r:"",c:"আনোড"},
+    {eq:"2Ag⁺ + 2e⁻ → 2Ag",r:"",c:""},
+    {eq:"Zn + 2NH₄⁺ + 2MnO₂ → Zn²⁺ + 2NH₃ + Mn₂O₃ + H₂O",r:"",c:"শুষ্ক কোষ"},
+    {eq:"²³⁵U + ⁰n → ¹⁴⁴Ba + ³⁶Kr + 3⁰n + শক্তি",r:"",c:"নিউক্লিয়ার"},
+    {eq:"Zn → Zn²⁺ + 2e⁻ (আনোড বিক্রিয়া)",r:"",c:"আনোড"},
+    {eq:"Cu²⁺ + 2e⁻ → Cu (ক্যাথোড বিক্রিয়া)",r:"",c:"ক্যাথোড"}
+  ]},
+  {id:9,name:"এসিড-ক্ষারক সমতা",ico:"🧪",rxns:[
+    {eq:"H₂CO₃(aq) ⇌ 2H⁺(aq) + CO₃²⁻(aq)",r:"",c:""},
+    {eq:"CH₃COOH(aq) ⇌ H⁺(aq) + CH₃COO⁻(aq)",r:"",c:""},
+    {eq:"CaO + 2HCl → CaCl₂ + H₂O",r:"HCl",c:""},
+    {eq:"Mg + H₂SO₄ → MgSO₄ + H₂",r:"H₂SO₄",c:""},
+    {eq:"Ca(OH)₂ + 2HCl → CaCl₂ + 2H₂O",r:"HCl",c:""},
+    {eq:"Ca(OH)₂ + CO₂ → CaCO₃ + H₂O",r:"CO₂",c:""},
+    {eq:"CaCO₃ + CO₂ + H₂O → Ca(HCO₃)₂",r:"CO₂, H₂O",c:""},
+    {eq:"CaCO₃ + 2HNO₃ → Ca(NO₃)₂ + H₂O + CO₂",r:"HNO₃",c:""},
+    {eq:"2NaHCO₃ + H₂SO₄ → Na₂SO₄ + 2H₂O + 2CO₂",r:"H₂SO₄",c:""},
+    {eq:"NaOH + HCl → NaCl + H₂O",r:"HCl",c:"প্রশমন"},
+    {eq:"SO₃ + H₂O → H₂SO₄",r:"H₂O",c:""},
+    {eq:"NH₄OH + HCl → NH₄Cl + H₂O",r:"HCl",c:""},
+    {eq:"Fe(NO₃)₂ + 2NaOH → Fe(OH)₂↓ + 2NaNO₃",r:"NaOH",c:""},
+    {eq:"Fe(NO₃)₃ + 3NaOH → Fe(OH)₃↓ + 3NaNO₃",r:"NaOH",c:""}
+  ]},
+  {id:10,name:"খনিজ সম্পদ — জীবাশ্ম",ico:"🏭",rxns:[
+    {eq:"Al(OH)₃ + 3HCl → AlCl₃ + 3H₂O",r:"HCl",c:""},
+    {eq:"Al(OH)₃ + NaOH → NaAlO₂ + 2H₂O",r:"NaOH",c:""},
+    {eq:"NaAlO₂ + 2H₂O → Al(OH)₃ + NaOH",r:"H₂O",c:""},
+    {eq:"2NaOH + SO₂ → Na₂SO₃ + H₂O",r:"SO₂",c:""},
+    {eq:"H₂SO₄ + Ca(OH)₂ → CaSO₄ + 2H₂O",r:"Ca(OH)₂",c:""},
+    {eq:"Mg(OH)₂ + 2HCl → MgCl₂ + 2H₂O",r:"HCl",c:""},
+    {eq:"2NH₄Cl + Ca(OH)₂ → CaCl₂ + 2NH₃ + 2H₂O",r:"Ca(OH)₂",c:""},
+    {eq:"H₂CO₃(aq) + H₂O(l) → H₃O⁺(aq) + HCO₃⁻(aq)",r:"",c:""},
+    {eq:"Co(NO₃)₂ + 2NaOH → Co(OH)₂ + 2NaNO₃",r:"NaOH",c:""},
+    {eq:"NH₄Cl + NaOH → NH₃ + NaCl + H₂O",r:"NaOH",c:""}
+  ]},
+  {id:11,name:"খনিজ সম্পদ — ধাতু-অধাতু",ico:"⛏️",rxns:[
+    {eq:"Al₂O₃ + 2NaOH → 2NaAlO₂ + H₂O",r:"NaOH",c:""},
+    {eq:"ZnCO₃ → ZnO + CO₂",r:"",c:"Δ"},
+    {eq:"2Al(OH)₃ → Al₂O₃ + 3H₂O",r:"",c:"Δ"},
+    {eq:"ZnO + C → Zn + CO",r:"C (কোক)",c:"উচ্চ তাপ"},
+    {eq:"2ZnS + 3O₂ → 2ZnO + 2SO₂",r:"O₂",c:"ভাজন"},
+    {eq:"CaCO₃ → CaO + CO₂",r:"",c:"Δ"},
+    {eq:"2PbS + 3O₂ → 2PbO + 2SO₂",r:"O₂",c:"ভাজন"},
+    {eq:"PbO + C → Pb + CO",r:"C",c:""},
+    {eq:"Fe₂O₃ + 3CO → 2Fe + 3CO₂",r:"CO",c:"উচ্চ তাপ"},
+    {eq:"Cu²⁺ + 2e⁻ → Cu",r:"",c:"ক্যাথোড"},
+    {eq:"Fe³⁺ + 3OH⁻ → Fe(OH)₃",r:"OH⁻",c:""},
+    {eq:"2Fe(OH)₃ → Fe₂O₃ + 3H₂O",r:"",c:"Δ"},
+    {eq:"S + O₂ → SO₂",r:"O₂",c:""},
+    {eq:"2SO₂ + O₂ → 2SO₃",r:"O₂, V₂O₅",c:"450°C"},
+    {eq:"SO₃ + H₂O → H₂SO₄",r:"H₂O",c:""},
+    {eq:"2H₂SO₄ (গাঢ়) + Cu → CuSO₄ + SO₂ + 2H₂O",r:"H₂SO₄ গাঢ়",c:""}
+  ]},
+  {id:12,name:"আমাদের জীবনে রসায়ন",ico:"🧬",rxns:[
+    {eq:"CH₄ + Cl₂ → CH₃Cl + HCl",r:"Cl₂",c:"UV"},
+    {eq:"CH₃Cl + Cl₂ → CH₂Cl₂ + HCl",r:"Cl₂",c:"UV"},
+    {eq:"CH₂Cl₂ + Cl₂ → CHCl₃ + HCl",r:"Cl₂",c:"UV"},
+    {eq:"CHCl₃ + Cl₂ → CCl₄ + HCl",r:"Cl₂",c:"UV"},
+    {eq:"nCH₂=CH₂ → (-CH₂-CH₂-)ₙ (পলিথিন)",r:"O₂",c:"1000 atm"},
+    {eq:"nCH₂=CHCl → (-CH₂-CHCl-)ₙ (PVC)",r:"",c:"উচ্চ তাপ/চাপ"},
+    {eq:"n(CH₂=CHCH₃) → [-CH₂-CH(CH₃)-]ₙ (পলিপ্রোপিলিন)",r:"TiCl₃",c:"140 atm"},
+    {eq:"nHOOC(CH₂)₄COOH + nNH₂(CH₂)₆NH₂ → নাইলন-৬:৬ + 2nH₂O",r:"TiO₂",c:"Δ"},
+    {eq:"CO₂ + 2NH₃ → NH₂CONH₂ + H₂O (ইউরিয়া)",r:"",c:"উচ্চ তাপ/চাপ"},
+    {eq:"CH₃COOH + C₂H₅OH ⇌ CH₃COOC₂H₅ + H₂O",r:"H₂SO₄",c:"এস্টারীকরণ"},
+    {eq:"C₆H₁₀O₅ + H₂O → C₆H₁₂O₆ (স্টার্চ → গ্লুকোজ)",r:"এনজাইম",c:""},
+    {eq:"C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂",r:"এনজাইম",c:"গাঁজন"},
+    {eq:"Ca(OH)₂ + Cl₂ → Ca(OCl)Cl + H₂O (ব্লিচিং পাউডার)",r:"Cl₂",c:"40°C"}
+  ]}
+];
+
+// Build chapter list
+var chListEl=document.getElementById('ch-list');
+chapters.forEach(function(ch){
+  var btn=document.createElement('button');btn.className='chbtn';
+  btn.innerHTML='<div class="chico">'+ch.ico+'</div><div><div class="chname">অধ্যায় '+ch.id+': '+ch.name+'</div><div class="chcnt">'+ch.rxns.length+'টি বিক্রিয়া</div></div><span class="charr">&#8250;</span>';
+  btn.addEventListener('click',(function(c){return function(){openChapter(c);};})(ch));
+  chListEl.appendChild(btn);
+});
+
+function openChapter(ch){
+  document.getElementById('rxn-title').textContent='অধ্যায় '+ch.id+': '+ch.name;
+  var el=document.getElementById('rxn-list');el.innerHTML='';
+  ch.rxns.forEach(function(rxn,i){
+    var card=document.createElement('div');card.className='rxncard';
+    var meta='';
+    if(rxn.r) meta+='<span class="mtag">বিকারক: '+rxn.r+'</span>';
+    if(rxn.c) meta+='<span class="mtag cond">শর্ত: '+rxn.c+'</span>';
+    card.innerHTML='<div class="rxneq"><span class="rnum">'+(i+1)+'</span>'+rxn.eq+'</div>'+(meta?'<div class="rxnmeta">'+meta+'</div>':'');
+    el.appendChild(card);
+  });
+  goTo('s-reactions');
+}
+
+// ═══════════ PATHFINDER DATA ═══════════
+var pfRxns=[
+    { from:"CO₂", to:"CH₄", reagent:"4H₂, Ni", condition:"250°C", desc:"CO₂ + 4H₂ → CH₄ + 2H₂O" },
+  { from:"CH₄", to:"CO₂", reagent:"2O₂", condition:"দহন", desc:"CH₄ + 2O₂ → CO₂ + 2H₂O + তাপশক্তি" },
+  { from:"CH₄", to:"CH₃Br", reagent:"Br₂", condition:"UV আলো / মৃদু সূর্যালোক", desc:"CH₄ + Br₂ → CH₃Br + HBr" },
+  { from:"CH₄", to:"CH₃Cl", reagent:"Cl₂", condition:"UV আলো", desc:"CH₄ + Cl₂ → CH₃Cl + HCl" },
+  { from:"CH₃COONa", to:"CH₄", reagent:"NaOH (CaO)", condition:"Δ, সোডালাইম", desc:"CH₃COONa + NaOH(CaO) → CH₄ + Na₂CO₃" },
+  { from:"CH₃Br", to:"CH₃OH", reagent:"NaOH (জলীয়)", condition:"aq", desc:"CH₃Br + NaOH(aq) → CH₃OH + NaBr" },
+  { from:"CH₄", to:"CH≡CH", reagent:"O₂", condition:">1000°C", desc:"6CH₄ + O₂ → 2CH≡CH + 2CO + 10H₂ (উচ্চ তাপ)" },
+  { from:"CO", to:"CH₃OH", reagent:"H₂, ZnO+Cr₂O₃", condition:"400°C, 300 atm", desc:"CO(s) + H₂(s) → CH₃OH" },
+
+  // ── মিথেন হ্যালাইড শৃঙ্খল ──────────────────────────────────────
+  { from:"CH₃Cl", to:"CH₂Cl₂", reagent:"Cl₂", condition:"UV", desc:"CH₃Cl + Cl₂ → CH₂Cl₂ + HCl" },
+  { from:"CH₂Cl₂", to:"CHCl₃", reagent:"Cl₂", condition:"UV", desc:"CH₂Cl₂ + Cl₂ → CHCl₃ + HCl" },
+  { from:"CHCl₃", to:"CCl₄", reagent:"Cl₂", condition:"UV", desc:"CHCl₃ + Cl₂ → CCl₄ + HCl" },
+
+  // ── মিথানল (CH₃OH) ──────────────────────────────────────────────
+  { from:"CH₃OH", to:"H-CHO", reagent:"K₂Cr₂O₇, গাঢ় H₂SO₄, [O]", condition:"", desc:"CH₃OH + [O] → H-CHO (মিথান্যাল) + H₂O" },
+  { from:"H-CHO", to:"H-COOH", reagent:"K₂Cr₂O₇, গাঢ় H₂SO₄, [O]", condition:"", desc:"H-CHO + [O] → H-COOH (মিথানোয়িক এসিড)" },
+  { from:"2CH₃OH", to:"2H-CHO", reagent:"O₂, Cu", condition:"500°C", desc:"2CH₃OH(g) + O₂(g) → 2H-CHO(g) + 2H₂O(g)" },
+
+  // ── ইথেন (C₂H₆ / CH₃-CH₃) ──────────────────────────────────────
+  { from:"CH₃COONa", to:"CH₃-CH₃", reagent:"NaOH (CaO)", condition:"Δ, সোডালাইম", desc:"CH₃COONa + NaOH(CaO) → CH₃-CH₃ + Na₂CO₃ (কিছু উৎসে)" },
+  { from:"2CH₃Br", to:"CH₃-CH₃", reagent:"Na", condition:"শুষ্ক ইথার", desc:"2CH₃Br + 2Na → CH₃-CH₃ + 2NaBr (উর্টজ)" },
+  { from:"CH₃-CH₃", to:"CH₃-CH₂Br", reagent:"Br₂", condition:"hν (UV)", desc:"CH₃-CH₃ + Br₂ → CH₃-CH₂Br + HBr" },
+  { from:"CH₃-CH₃", to:"CH₂=CH₂", reagent:"Br₂ (পরোক্ষ)", condition:"", desc:"ইথেন → ইথাইল ব্রোমাইড → NaOH(alc) → ইথিন" },
+
+  // ── ইথিন (CH₂=CH₂) ──────────────────────────────────────────────
+  { from:"CH₃-CH₂OH", to:"CH₂=CH₂", reagent:"H₂SO₄", condition:"170°C / 100°C", desc:"CH₃-CH₂OH → CH₂=CH₂ + H₂O (H₂SO₄, 170°C)" },
+  { from:"CH₃CH₂Cl", to:"CH₂=CH₂", reagent:"KOH (alc) / NaOH (alc)", condition:"Δ", desc:"CH₃CH₂Cl + KOH(alc) → CH₂=CH₂ + KCl + H₂O" },
+  { from:"CH₂=CH₂", to:"CH₃-CH₃", reagent:"H₂, Ni", condition:"180–200°C", desc:"CH₂=CH₂ + H₂ → CH₃-CH₃ (ইথেন)" },
+  { from:"CH₂=CH₂", to:"CH₃-CH₂OH", reagent:"H₂O, H₃PO₄", condition:"উচ্চ তাপ ও চাপ (300°C, 60 atm)", desc:"CH₂=CH₂ + H₂O → CH₃-CH₂OH (ইথানল)" },
+  { from:"CH₂=CH₂", to:"CH₂Br-CH₂Br", reagent:"Br₂", condition:"CCl₄", desc:"CH₂=CH₂ + Br₂ → CH₂Br-CH₂Br (1,2-ডাইব্রোমো ইথেন)" },
+  { from:"CH₂=CH₂", to:"CH₂OH-CH₂OH", reagent:"KMnO₄, KOH, H₂O, [O]", condition:"", desc:"CH₂=CH₂ + H₂O + [O] → CH₂OH-CH₂OH (ইথিলিন গ্লাইকল)" },
+  { from:"CH₂=CH₂", to:"পলিথিন", reagent:"O₂", condition:"1000 atm, 200°C", desc:"nCH₂=CH₂ → (-CH₂-CH₂-)ₙ (পলিথিন)" },
+  { from:"CH₂=CH₂", to:"CH₃-CH₂Br", reagent:"HBr", condition:"H₂O₂", desc:"CH₂=CH₂ + HBr → CH₃-CH₂Br (মার্কনিকফ বিরোধী)" },
+
+  // ── ইথাইন / ইথাইন (CH≡CH) ──────────────────────────────────────
+  { from:"CaC₂", to:"CH≡CH", reagent:"H₂O", condition:"", desc:"CaC₂ + 2H₂O → CH≡CH + Ca(OH)₂" },
+  { from:"CH≡CH", to:"CH₂=CH₂", reagent:"H₂, Pd/BaSO₄", condition:"", desc:"CH≡CH + H₂ → CH₂=CH₂ (আংশিক বিজারণ)" },
+  { from:"CH≡CH", to:"CH₃-CH₃", reagent:"2H₂, Ni", condition:"180–200°C", desc:"CH≡CH + 2H₂ → CH₃-CH₃ (ইথেন)" },
+  { from:"CH≡CH", to:"CH₃CHO", reagent:"H₂O, 20% H₂SO₄, 2% HgSO₄", condition:"80°C", desc:"CH≡CH + H₂O → CH₃CHO (ইথান্যাল / অ্যাসিটালডিহাইড)" },
+  { from:"CH≡CH", to:"CHBr₂-CHBr₂", reagent:"2Br₂", condition:"", desc:"CH≡CH + 2Br₂ → CHBr₂-CHBr₂ (টেট্রাব্রোমো ইথেন)" },
+  { from:"CH≡CH", to:"CH₂=CHCl", reagent:"HCl (g)", condition:"250°C, HgCl₂", desc:"CH≡CH + HCl → CH₂=CHCl (ভিনাইল ক্লোরাইড)" },
+  { from:"CH₂=CHCl", to:"PVC", reagent:"পলিমারকরণ", condition:"উচ্চ তাপ/চাপ, জৈব পার-অক্সাইড", desc:"nCH₂=CHCl → (-CH₂-CHCl-)ₙ (PVC)" },
+  { from:"CH≡CH", to:"CH₂=CH₂", reagent:"H₂, Ni (আংশিক)", condition:"", desc:"CH≡CH + H₂ (Pd/BaSO₄) → CH₂=CH₂" },
+  { from:"6CH₄", to:"CH≡CH", reagent:"O₂", condition:">1000°C", desc:"6CH₄ + O₂ → 2CH≡CH + 2CO + 10H₂" },
+
+  // ── ইথানল (CH₃-CH₂OH) ───────────────────────────────────────────
+  { from:"CH₃-CH₂Br", to:"CH₃-CH₂OH", reagent:"NaOH (aq)", condition:"", desc:"CH₃-CH₂Br + NaOH(aq) → CH₃-CH₂OH + NaBr" },
+  { from:"C₆H₁₂O₆", to:"CH₃-CH₂OH", reagent:"এনজাইম", condition:"গাঁজন", desc:"C₆H₁₂O₆ → 2CH₃-CH₂OH + 2CO₂ (গ্লুকোজ থেকে)" },
+  { from:"CH₃-CH₂OH", to:"CH₃CHO", reagent:"K₂Cr₂O₇, H₂SO₄, [O]", condition:"", desc:"CH₃-CH₂OH + [O] → CH₃CHO + H₂O (ইথান্যাল)" },
+  { from:"CH₃-CH₂OH", to:"CH₃COOH", reagent:"K₂Cr₂O₇, H₂SO₄ (অতিরিক্ত)", condition:"", desc:"CH₃-CH₂OH + 2[O] → CH₃COOH + H₂O" },
+  { from:"CH₃-CH₂OH", to:"CH₂=CH₂", reagent:"H₂SO₄", condition:"170°C", desc:"CH₃-CH₂OH → CH₂=CH₂ + H₂O (নির্জলন)" },
+  { from:"CH₃-CH₂OH", to:"CH₂=CH₂", reagent:"KOH (alc)", condition:"Δ", desc:"CH₃-CH₂OH + KOH(alc) → CH₂=CH₂ + H₂O" },
+  { from:"CH₃-CH₂OH", to:"CH₃COOC₂H₅", reagent:"CH₃COOH, H₂SO₄", condition:"এস্টারীকরণ", desc:"CH₃-CH₂OH + CH₃COOH ⇌ CH₃COOC₂H₅ + H₂O" },
+  { from:"CH₃COOC₂H₅", to:"CH₃-CH₂OH", reagent:"H₂O, HCl", condition:"", desc:"CH₃COOC₂H₅ + H₂O ⇌ CH₃-CH₂OH + CH₃COOH" },
+  { from:"CH₃-CH₂OH", to:"CH₃COOH", reagent:"O₂", condition:"ব্যাকটেরিয়া/অক্সিডাইজার", desc:"CH₃-CH₂OH + O₂ → CH₃COOH + H₂O" },
+
+  // ── ইথান্যাল (CH₃CHO) ────────────────────────────────────────────
+  { from:"CH₃CHO", to:"CH₃COOH", reagent:"K₂Cr₂O₇, H₂SO₄, [O]", condition:"", desc:"CH₃CHO + [O] → CH₃COOH (ইথানোয়িক এসিড)" },
+  { from:"CH₃CHO", to:"CH₃COOH", reagent:"O₂, Mn²⁺", condition:"60°C", desc:"CH₃CHO + O₂ → 2CH₃COOH (বায়ু জারণ)" },
+
+  // ── ইথানোয়িক এসিড / অ্যাসিটিক এসিড (CH₃COOH) ──────────────────
+  { from:"CH₃COOH", to:"CH₃COONa", reagent:"NaOH", condition:"", desc:"CH₃COOH + NaOH → CH₃COONa + H₂O" },
+  { from:"CH₃COONa", to:"CH₄", reagent:"NaOH (CaO)", condition:"Δ, সোডালাইম", desc:"CH₃COONa + NaOH(CaO) → CH₄ + Na₂CO₃" },
+  { from:"CH₃COOH", to:"CH₃COOC₂H₅", reagent:"C₂H₅OH, H₂SO₄", condition:"এস্টারীকরণ", desc:"CH₃COOH + C₂H₅OH ⇌ CH₃COOC₂H₅ + H₂O" },
+
+  // ── প্রোপিন (CH₃-CH=CH₂) ────────────────────────────────────────
+  { from:"CH₃-CH₂-CH₂OH", to:"CH₃-CH=CH₂", reagent:"H₂SO₄", condition:"170°C, -H₂O", desc:"CH₃-CH₂-CH₂OH → CH₃-CH=CH₂ + H₂O (প্রোপিন)" },
+  { from:"CH₃-CH=CH₂", to:"CH₃-CH₂-CH₃", reagent:"H₂, Ni", condition:"200°C", desc:"CH₃-CH=CH₂ + H₂ → CH₃-CH₂-CH₃ (প্রোপেন)" },
+  { from:"CH₃-CH=CH₂", to:"CH₃-CH₂-CH₂OH", reagent:"H₂O, H₃PO₄", condition:"300°C, 60 atm", desc:"CH₃-CH=CH₂ + H₂O → CH₃-CH₂-CH₂OH (প্রোপানল)" },
+  { from:"CH₃-CH=CH₂", to:"CH₃-CH(Br)-CH₂Br", reagent:"Br₂", condition:"কমলা-লাল বর্ণ বিনাশ", desc:"CH₃-CH=CH₂ + Br₂ → 1,2-ডাইব্রোমো প্রোপেন (বর্ণহীন)" },
+  { from:"CH₃-CH=CH₂", to:"CH₃-CH(OH)-CH₂OH", reagent:"KMnO₄, H₂O, [O]", condition:"", desc:"CH₃-CH=CH₂ + H₂O + [O] → প্রোপিলিন গ্লাইকল" },
+  { from:"CH₃-CH=CH₂", to:"CH₃-CH₂-CH₂Br", reagent:"HBr", condition:"জৈব পার-অক্সাইড", desc:"CH₃-CH=CH₂ + HBr → প্রোপাইল ব্রোমাইড (মার্ক. বিরোধী)" },
+  { from:"CH₃-CH=CH₂", to:"পলিপ্রোপিলিন", reagent:"TiCl₃", condition:"140 atm, 120°C", desc:"n(CH₃-CH=CH₂) → [-CH₂-CH(CH₃)-]ₙ (পলিপ্রোপিলিন)" },
+  { from:"CH₃-CH=CH₂", to:"CH₃-CH₂-CH₂Br", reagent:"HBr, H₂O₂", condition:"200°C", desc:"প্রোপিন + HBr → প্রোপাইল ব্রোমাইড" },
+
+  // ── প্রোপেন (CH₃-CH₂-CH₃) ──────────────────────────────────────
+  { from:"CH₃-C≡CH", to:"CH₃-CH=CH₂", reagent:"H₂, Pd/BaSO₄", condition:"", desc:"CH₃-C≡CH + H₂ → CH₃-CH=CH₂ (প্রোপিন)" },
+  { from:"CH₃-CH₂-CH₃", to:"CH₃-CH₂-CH₂Br", reagent:"Br₂", condition:"hν", desc:"CH₃-CH₂-CH₃ + Br₂ → CH₃-CH₂-CH₂Br + HBr" },
+  { from:"CH₃-CH₂-CH₃", to:"CH₃-CH₂-COOH", reagent:"KMnO₄, [O]", condition:"", desc:"CH₃-CH₂-CH₃ + 3[O] → CH₃-CH₂-COOH + H₂O" },
+  { from:"CH₃CH₂COONa", to:"CH₃-CH₂-CH₃", reagent:"NaOH (CaO)", condition:"Δ", desc:"CH₃CH₂COONa + NaOH(CaO) → CH₃-CH₂-CH₃ + Na₂CO₃" },
+
+  // ── প্রোপানল (CH₃-CH₂-CH₂OH) ────────────────────────────────────
+  { from:"CH₃-CH₂-CH₂Br", to:"CH₃-CH₂-CH₂OH", reagent:"NaOH (aq)", condition:"", desc:"CH₃-CH₂-CH₂Br + NaOH(aq) → CH₃-CH₂-CH₂OH + NaBr" },
+  { from:"C₃H₇Br", to:"C₃H₇OH", reagent:"NaOH", condition:"Δ", desc:"C₃H₇Br + NaOH → C₃H₇OH (প্রোপানল) + NaBr" },
+  { from:"CH₃-CH₂-CH₂OH", to:"CH₃-CH₂-CHO", reagent:"K₂Cr₂O₇, H₂SO₄, [O]", condition:"", desc:"CH₃-CH₂-CH₂OH + [O] → CH₃-CH₂-CHO + H₂O (প্রোপান্যাল)" },
+  { from:"CH₃-CH₂-CH₂OH", to:"CH₃-CH=CH₂", reagent:"H₂SO₄", condition:"170°C", desc:"CH₃-CH₂-CH₂OH → CH₃-CH=CH₂ + H₂O" },
+
+  // ── প্রোপান্যাল (CH₃-CH₂-CHO) ───────────────────────────────────
+  { from:"CH₃-CH₂-CHO", to:"CH₃-CH₂-COOH", reagent:"K₂Cr₂O₇, H₂SO₄, [O]", condition:"", desc:"CH₃-CH₂-CHO + [O] → CH₃-CH₂-COOH (প্রোপানোয়িক এসিড)" },
+
+  // ── প্রোপানোয়িক / প্রোপিওনিক এসিড (CH₃-CH₂-COOH) ──────────────
+  { from:"CH₃-CH₂-COOH", to:"CH₃CH₂COONa", reagent:"NaOH", condition:"", desc:"CH₃-CH₂-COOH + NaOH → CH₃CH₂COONa + H₂O" },
+  { from:"CH₃CH₂COONa", to:"CH₃-CH₂-CH₃", reagent:"NaOH (CaO)", condition:"Δ", desc:"CH₃CH₂COONa + NaOH(CaO) → CH₃-CH₂-CH₃ + Na₂CO₃" },
+  { from:"CH₃CH₂COONa", to:"CH₃-CH₃", reagent:"NaOH (CaO)", condition:"Δ (সোডালাইম)", desc:"CH₃CH₂COONa + NaOH → CH₃-CH₃ + Na₂CO₃ (ইথেন)" },
+
+  // ── বিউটেন / বিউটানল / বিউটানোয়িক এসিড শ্রেণি ──────────────────
+  { from:"CH₃-CH₂-CH=CH₂", to:"CH₃-CH₂-CH₂-CH₂OH", reagent:"H₂O, H₃PO₄", condition:"300°C, 60 atm", desc:"বিউটিন-1 + H₂O → বিউটানল-1" },
+  { from:"CH₃-CH₂-CH₂-CH₂OH", to:"CH₃-CH₂-CH=CH₂", reagent:"H₂SO₄", condition:"165°C", desc:"বিউটানল-1 → বিউটিন-1 + H₂O (নির্জলন)" },
+  { from:"CH₃-CH₂-CH₂-CH₂OH", to:"CH₃-CH₂-CH₂-CHO", reagent:"K₂Cr₂O₇, H₂SO₄, [O]", condition:"", desc:"বিউটানল + [O] → বিউটান্যাল + H₂O" },
+  { from:"CH₃-CH₂-CH₂-CHO", to:"CH₃-CH₂-CH₂-COOH", reagent:"K₂Cr₂O₇, H₂SO₄, [O]", condition:"", desc:"বিউটান্যাল + [O] → বিউটানোয়িক এসিড" },
+  { from:"CH₃-CH₂-CH₂-COOH", to:"CH₃-CH₂-CH₂-CH₂OH", reagent:"LiAlH₄ / পরোক্ষ", condition:"", desc:"বিউটানোয়িক এসিড বিজারিত হয়ে বিউটানল" },
+  { from:"CH₃-CH₂-CH₂-CH₂Cl", to:"CH₃-CH₂-CH₂-CH₂OH", reagent:"NaOH (aq)", condition:"", desc:"বিউটাইল ক্লোরাইড + NaOH → বিউটানল + NaCl" },
+  { from:"CH₃-CH₂-CH₂-COOH", to:"CH₃CH₂CH₂COONa", reagent:"NaOH", condition:"", desc:"বিউটানোয়িক এসিড + NaOH → সোডিয়াম বিউটানেয়েট + H₂O" },
+  { from:"CH₃CH₂CH₂COONa", to:"CH₃-CH₂-CH₃", reagent:"NaOH (CaO)", condition:"Δ", desc:"সোডিয়াম বিউটানেয়েট + সোডালাইম → প্রোপেন + Na₂CO₃" },
+  { from:"CH₃-CH₂-CH₂-CH₂Cl", to:"CH₃-CH₂-CH=CH₂", reagent:"NaOH (alc)", condition:"Δ", desc:"বিউটাইল ক্লোরাইড + NaOH(alc) → বিউটিন-1 + NaCl + H₂O" },
+  { from:"CH₃CH₂CH₂Br", to:"CH₃CH₂CH₂CN", reagent:"KCN", condition:"", desc:"প্রোপাইল ব্রোমাইড + KCN → বিউটেন নাইট্রাইল + KBr" },
+  { from:"CH₃CH₂CH₂CN", to:"CH₃-CH₂-CH₂-COOH", reagent:"H₂O, H₂SO₄", condition:"", desc:"বিউটেন নাইট্রাইল + H₂O → বিউটানোয়িক এসিড" },
+
+  // ── প্রোপাইন (CH₃-C≡CH) ────────────────────────────────────────
+  { from:"CH₃-C≡CH", to:"CH₃-CH₂-CH₃", reagent:"2H₂, Ni", condition:"180–200°C", desc:"CH₃-C≡CH + 2H₂ → CH₃-CH₂-CH₃ (প্রোপেন)" },
+  { from:"CH₃-C≡CH", to:"CHBr₂-CHBr₂ (প্রোপাইন)", reagent:"2Br₂", condition:"লাল বর্ণ → বর্ণহীন", desc:"CH₃-C≡CH + 2Br₂ → টেট্রাব্রোমো প্রোপেন" },
+
+  // ── ক্যালসিয়াম কার্বাইড ────────────────────────────────────────
+  { from:"CaC₂", to:"CH≡CH", reagent:"2H₂O", condition:"", desc:"CaC₂ + 2H₂O → CH≡CH + Ca(OH)₂" },
+
+  // ── ইথাইল ব্রোমাইড (CH₃-CH₂Br) ─────────────────────────────────
+  { from:"CH₃-CH₂Br", to:"CH₃-CH₂OH", reagent:"NaOH (aq)", condition:"", desc:"CH₃-CH₂Br + NaOH(aq) → CH₃-CH₂OH + NaBr" },
+  { from:"CH₃-CH₂Br", to:"CH₂=CH₂", reagent:"KOH (alc)", condition:"", desc:"CH₃-CH₂Br + KOH(alc) → CH₂=CH₂ + KBr + H₂O" },
+
+  // ── গ্লুকোজ ──────────────────────────────────────────────────────
+  { from:"C₆H₁₀O₅", to:"C₆H₁₂O₆", reagent:"H₂O, এনজাইম", condition:"", desc:"C₆H₁₀O₅ (স্টার্চ) + H₂O → C₆H₁₂O₆ (গ্লুকোজ)" },
+  { from:"C₆H₁₂O₆", to:"CH₃-CH₂OH", reagent:"এনজাইম", condition:"গাঁজন", desc:"C₆H₁₂O₆ → 2CH₃-CH₂OH + 2CO₂" },
+
+  // ── নাইলন ─────────────────────────────────────────────────────────
+  { from:"অ্যাডিপিক এসিড", to:"নাইলন-৬:৬", reagent:"হেক্সামেথিলিন ডাই-অ্যামিন, TiO₂", condition:"Δ", desc:"nHOOC(CH₂)₄COOH + nNH₂(CH₂)₆NH₂ → নাইলন-৬:৬ + 2nH₂O" },
+
+  // ── ব্লিচিং পাউডার ────────────────────────────────────────────────
+  { from:"Ca(OH)₂", to:"Ca(OCl)Cl", reagent:"Cl₂", condition:"40°C", desc:"Ca(OH)₂ + Cl₂ → Ca(OCl)Cl + H₂O (ব্লিচিং পাউডার)" },
+
+  // ── ইথাইল ব্রোমাইড থেকে বিভিন্ন পথ ───────────────────────────────
+  { from:"CH₃-CH₂Br", to:"CH₃CHO", reagent:"পরোক্ষ (NaOH→ইথানল→জারণ)", condition:"", desc:"ইথাইল ব্রোমাইড → ইথানল → ইথান্যাল" },
+
+  // ── মিথান্যাল থেকে মিথানোয়িক এসিড ──────────────────────────────
+  { from:"H-CHO", to:"H-COOH", reagent:"[O], K₂Cr₂O₇", condition:"", desc:"H-CHO + [O] → H-COOH (মিথানোয়িক এসিড)" },
+
+  // ── প্রোপিলিন গ্লাইকল ─────────────────────────────────────────────
+  { from:"CH₃-CH=CH₂", to:"CH₃-CH(OH)-CH₂OH", reagent:"KMnO₄, H₂O", condition:"", desc:"প্রোপিন + H₂O + [O] KMnO₄ → প্রোপিলিন গ্লাইকল" },
+
+  // ── ইথিলিন গ্লাইকল ────────────────────────────────────────────────
+  { from:"CH₂=CH₂", to:"CH₂OH-CH₂OH", reagent:"H₂O, [O], KMnO₄/KOH", condition:"", desc:"ইথিন + H₂O + [O] → ইথিলিন গ্লাইকল (বর্ণহীন)" },
+
+  // ── পলিপ্রোপিলিন ───────────────────────────────────────────────────
+  { from:"CH₃-CH=CH₂", to:"পলিপ্রোপিলিন", reagent:"TiCl₃", condition:"140 atm, 120°C", desc:"n(CH₃-CH=CH₂) → [-CH₂-CH(CH₃)-]ₙ পলিপ্রোপিলিন" },
+
+  // ── বিউটেন-১ নাইট্রাইল ────────────────────────────────────────────
+  { from:"CH₃CH₂CH₂Br", to:"CH₃CH₂CH₂COOH", reagent:"KCN → H₂O/H⁺", condition:"", desc:"প্রোপাইল ব্রোমাইড + KCN → নাইট্রাইল → বিউটানোয়িক এসিড" },
+
+  // ── ইথাইন থেকে ইথানল ─────────────────────────────────────────────
+  { from:"CH≡CH", to:"CH₃-CH₂OH", reagent:"H₂O(H₃PO₄, পরোক্ষ)", condition:"", desc:"CH≡CH → CH₃CHO → (বিজারণ) → CH₃-CH₂OH" },
+
+  // ── সোডিয়াম ইথানেয়েট ─────────────────────────────────────────────
+  { from:"CH₃COONa", to:"CH₃COOH", reagent:"HCl", condition:"", desc:"CH₃COONa + HCl → CH₃COOH + NaCl" },
+  { from:"CH₃COONa", to:"CH₄", reagent:"NaOH, CaO", condition:"Δ", desc:"CH₃COONa + NaOH(CaO) → CH₄ + Na₂CO₃ (সোডালাইম পদ্ধতি)" },
+
+  // ── প্রোপাইল ব্রোমাইড ─────────────────────────────────────────────
+  { from:"CH₃-CH₂-CH₂Br", to:"CH₃-CH₂-CH₂OH", reagent:"NaOH (aq)", condition:"", desc:"প্রোপাইল ব্রোমাইড + NaOH → প্রোপানল + NaBr" },
+  { from:"CH₃-CH₂-CH₂Br", to:"CH₃-CH=CH₂", reagent:"KOH (alc)", condition:"Δ", desc:"প্রোপাইল ব্রোমাইড + KOH(alc) → প্রোপিন + KBr + H₂O" },
+
+  // ── ইথাইন থেকে ভিনাইল ক্লোরাইড ──────────────────────────────────
+  { from:"CH≡CH", to:"CH₂=CHCl", reagent:"HCl", condition:"250°C, HgCl₂", desc:"ইথাইন + HCl → ভিনাইল ক্লোরাইড (ক্লোরো ইথিন)" },
+
+  // ── কার্বন ডাইঅক্সাইড ─────────────────────────────────────────────
+  { from:"CO₂", to:"CH₄", reagent:"4H₂, Ni", condition:"250°C", desc:"CO₂ + 4H₂ → CH₄ + 2H₂O" },
+];
+
+var pfGraph={};
+pfRxns.forEach(function(r){if(!pfGraph[r.from])pfGraph[r.from]=[];pfGraph[r.from].push({to:r.to,rxn:r});});
+var allPfC=[...new Set(pfRxns.reduce(function(a,r){return a.concat([r.from,r.to]);},[]))].sort(function(a,b){return a.localeCompare(b,'bn');});
+
+var startSel=document.getElementById('startSel');
+var endSel=document.getElementById('endSel');
+allPfC.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;startSel.appendChild(o);});
+
+function getReachable(start){
+  var vis=new Set();var q=[start];vis.add(start);
+  while(q.length){var n=q.shift();(pfGraph[n]||[]).forEach(function(e){if(!vis.has(e.to)){vis.add(e.to);q.push(e.to);}});}
+  vis.delete(start);return vis;
+}
+
+startSel.addEventListener('change',function(){
+  var s=startSel.value;endSel.innerHTML='';document.getElementById('pf-result').innerHTML='';
+  if(!s){endSel.innerHTML='<option value="">— আগে শুরু বেছে নিন —</option>';endSel.disabled=true;return;}
+  var reach=getReachable(s);
+  var ph=document.createElement('option');ph.value='';
+  ph.textContent=reach.size>0?('— '+reach.size+'টি যৌগ পাওয়া যাচ্ছে —'):'— কোনো পথ নেই —';
+  endSel.appendChild(ph);
+  if(reach.size===0){endSel.disabled=true;return;}
+  endSel.disabled=false;
+  [...reach].sort(function(a,b){return a.localeCompare(b,'bn');}).forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;endSel.appendChild(o);});
+});
+
+function bfsAllPaths(start,end){
+  if(start===end)return[];
+  var queue=[[start,[]]];var vis=new Map();var results=[];var shortest=Infinity;
+  while(queue.length){
+    var item=queue.shift();var node=item[0];var path=item[1];
+    if(path.length>shortest)break;
+    if(node===end){if(path.length<=shortest){shortest=path.length;results.push(path);}continue;}
+    if(vis.has(node)&&vis.get(node)<path.length)continue;
+    vis.set(node,path.length);
+    (pfGraph[node]||[]).forEach(function(edge){
+      if(!path.find(function(p){return p.rxn.from===node&&p.rxn.to===edge.to;})){
+        queue.push([edge.to,path.concat([edge])]);
+      }
+    });
+  }return results;
+}
+
+function findPath(){
+  var s=startSel.value,e=endSel.value;
+  var rd=document.getElementById('pf-result');
+  if(!s||!e){rd.innerHTML='<div class="nopath"><span class="npico">⚗️</span>দয়া করে উভয় যৌগ বেছে নিন।</div>';return;}
+  if(s===e){rd.innerHTML='<div class="nopath"><span class="npico">🔄</span>শুরু ও লক্ষ্য একই!</div>';return;}
+  var allP=bfsAllPaths(s,e);
+  if(!allP.length){rd.innerHTML='<div class="nopath"><span class="npico">❌</span><strong>'+s+'</strong> থেকে <strong>'+e+'</strong>-এ পথ নেই।</div>';return;}
+  var best=allP[0];
+  var nodes=[s].concat(best.map(function(ex){return ex.to;}));
+  var html='<div class="restitle">সেরা পথ</div><div class="statsbar"><div class="schip">ধাপ: <span>'+best.length+'</span></div><div class="schip">বিকল্প: <span>'+(allP.length-1)+'</span></div></div><div class="pathwrap">';
+  nodes.forEach(function(compound,i){
+    var iS=i===0,iE=i===nodes.length-1;
+    html+='<div class="stepw" style="animation-delay:'+(i*0.13)+'s"><div class="cbubble '+(iS?'cstart':iE?'cend':'')+'"><div class="cname">'+(iS?'🔬 ':iE?'🎯 ':'⚗️ ')+compound+'</div></div>';
+    if(i<best.length){
+      var rx=best[i].rxn;
+      html+='<div class="rxnarrow"><div class="arrdn" style="height:14px"></div><div class="rxnbox"><span class="reag">বিকারক: '+rx.r+'</span>'+(rx.c?'<br>শর্ত: '+rx.c:'')+'<br><small style="opacity:0.68">'+rx.d+'</small></div><div class="arrdn"></div></div>';
+    }
+    html+='</div>';
+  });
+  html+='</div>';
+  if(allP.length>1){
+    html+='<div class="altpaths"><div class="alttitle">বিকল্প পথ ('+(allP.length-1)+'টি)</div>';
+    allP.slice(1).forEach(function(path,pi){
+      var pn=[s].concat(path.map(function(ex){return ex.to;}));
+      html+='<div class="altitem"><strong>বিকল্প '+(pi+1)+':</strong> ';
+      pn.forEach(function(n,ni){html+='<span class="ctag">'+n+'</span>';if(ni<path.length)html+=' <small style="color:var(--accent)">→</small> ';});
+      html+='</div>';
+    });
+    html+='</div>';
+  }
+  rd.innerHTML=html;
+}
+
+// ═══════════ PERIODIC TABLE ═══════════
+var catColor={
+  alkali:"#e84c4c",
+  alkaline:"#f5a623",
+  transition:"#f0c040",
+  post:"#8bc34a",
+  metalloid:"#26a69a",
+  nonmetal:"#42a5f5",
+  halogen:"#7e57c2",
+  noble:"#ec407a",
+  lanthanide:"#26c6da",
+  actinide:"#ff7043"
+};
+var catName={
+  alkali:"ক্ষার ধাতু",
+  alkaline:"মৃৎক্ষার ধাতু",
+  transition:"ট্রানজিশন ধাতু",
+  post:"পোস্ট-ট্রানজিশন",
+  metalloid:"অর্ধধাতু",
+  nonmetal:"সক্রিয় অধাতু",
+  halogen:"হ্যালোজেন",
+  noble:"নিষ্ক্রিয় গ্যাস",
+  lanthanide:"ল্যান্থানাইড",
+  actinide:"অ্যাকটিনাইড"
+};
+
+// Standard 18-col periodic table layout
+// Lanthanides (57-71) placed at row 9, col 1-15
+// Actinides  (89-103) placed at row 10, col 1-15
+var elements=[
+  {n:1,  sym:"H",  name:"হাইড্রোজেন",    mass:1.008,   cat:"nonmetal",   bn:"সক্রিয় অধাতু",    period:1, config:"1s\u00b9",              state:"গ্যাস",  col:1, row:1},
+  {n:2,  sym:"He", name:"হিলিয়াম",       mass:4.0026,  cat:"noble",      bn:"নিষ্ক্রিয় গ্যাস", period:1, config:"1s\u00b2",              state:"গ্যাস",  col:18,row:1},
+  {n:3,  sym:"Li", name:"লিথিয়াম",       mass:6.941,   cat:"alkali",     bn:"ক্ষার ধাতু",       period:2, config:"[He]2s\u00b9",           state:"কঠিন",  col:1, row:2},
+  {n:4,  sym:"Be", name:"বেরিলিয়াম",     mass:9.0122,  cat:"alkaline",   bn:"মৃৎক্ষার ধাতু",   period:2, config:"[He]2s\u00b2",           state:"কঠিন",  col:2, row:2},
+  {n:5,  sym:"B",  name:"বোরন",           mass:10.81,   cat:"metalloid",  bn:"অর্ধধাতু",         period:2, config:"[He]2s\u00b22p\u00b9",   state:"কঠিন",  col:13,row:2},
+  {n:6,  sym:"C",  name:"কার্বন",         mass:12.011,  cat:"nonmetal",   bn:"সক্রিয় অধাতু",    period:2, config:"[He]2s\u00b22p\u00b2",   state:"কঠিন",  col:14,row:2},
+  {n:7,  sym:"N",  name:"নাইট্রোজেন",    mass:14.007,  cat:"nonmetal",   bn:"সক্রিয় অধাতু",    period:2, config:"[He]2s\u00b22p\u00b3",   state:"গ্যাস",  col:15,row:2},
+  {n:8,  sym:"O",  name:"অক্সিজেন",      mass:15.999,  cat:"nonmetal",   bn:"সক্রিয় অধাতু",    period:2, config:"[He]2s\u00b22p\u2074",   state:"গ্যাস",  col:16,row:2},
+  {n:9,  sym:"F",  name:"ফ্লোরিন",       mass:18.998,  cat:"halogen",    bn:"হ্যালোজেন",        period:2, config:"[He]2s\u00b22p\u2075",   state:"গ্যাস",  col:17,row:2},
+  {n:10, sym:"Ne", name:"নিয়ন",          mass:20.180,  cat:"noble",      bn:"নিষ্ক্রিয় গ্যাস", period:2, config:"[He]2s\u00b22p\u2076",   state:"গ্যাস",  col:18,row:2},
+  {n:11, sym:"Na", name:"সোডিয়াম",       mass:22.990,  cat:"alkali",     bn:"ক্ষার ধাতু",       period:3, config:"[Ne]3s\u00b9",           state:"কঠিন",  col:1, row:3},
+  {n:12, sym:"Mg", name:"ম্যাগনেসিয়াম",  mass:24.305,  cat:"alkaline",   bn:"মৃৎক্ষার ধাতু",   period:3, config:"[Ne]3s\u00b2",           state:"কঠিন",  col:2, row:3},
+  {n:13, sym:"Al", name:"অ্যালুমিনিয়াম", mass:26.982,  cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:3, config:"[Ne]3s\u00b23p\u00b9",   state:"কঠিন",  col:13,row:3},
+  {n:14, sym:"Si", name:"সিলিকন",         mass:28.085,  cat:"metalloid",  bn:"অর্ধধাতু",         period:3, config:"[Ne]3s\u00b23p\u00b2",   state:"কঠিন",  col:14,row:3},
+  {n:15, sym:"P",  name:"ফসফরাস",         mass:30.974,  cat:"nonmetal",   bn:"সক্রিয় অধাতু",    period:3, config:"[Ne]3s\u00b23p\u00b3",   state:"কঠিন",  col:15,row:3},
+  {n:16, sym:"S",  name:"সালফার",         mass:32.06,   cat:"nonmetal",   bn:"সক্রিয় অধাতু",    period:3, config:"[Ne]3s\u00b23p\u2074",   state:"কঠিন",  col:16,row:3},
+  {n:17, sym:"Cl", name:"ক্লোরিন",        mass:35.45,   cat:"halogen",    bn:"হ্যালোজেন",        period:3, config:"[Ne]3s\u00b23p\u2075",   state:"গ্যাস",  col:17,row:3},
+  {n:18, sym:"Ar", name:"আর্গন",          mass:39.948,  cat:"noble",      bn:"নিষ্ক্রিয় গ্যাস", period:3, config:"[Ne]3s\u00b23p\u2076",   state:"গ্যাস",  col:18,row:3},
+  {n:19, sym:"K",  name:"পটাসিয়াম",      mass:39.098,  cat:"alkali",     bn:"ক্ষার ধাতু",       period:4, config:"[Ar]4s\u00b9",           state:"কঠিন",  col:1, row:4},
+  {n:20, sym:"Ca", name:"ক্যালসিয়াম",    mass:40.078,  cat:"alkaline",   bn:"মৃৎক্ষার ধাতু",   period:4, config:"[Ar]4s\u00b2",           state:"কঠিন",  col:2, row:4},
+  {n:21, sym:"Sc", name:"স্ক্যান্ডিয়াম", mass:44.956,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:4, config:"[Ar]3d\u00b94s\u00b2",   state:"কঠিন",  col:3, row:4},
+  {n:22, sym:"Ti", name:"টাইটানিয়াম",    mass:47.867,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:4, config:"[Ar]3d\u00b24s\u00b2",   state:"কঠিন",  col:4, row:4},
+  {n:23, sym:"V",  name:"ভ্যানাডিয়াম",   mass:50.942,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:4, config:"[Ar]3d\u00b34s\u00b2",   state:"কঠিন",  col:5, row:4},
+  {n:24, sym:"Cr", name:"ক্রোমিয়াম",     mass:51.996,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:4, config:"[Ar]3d\u20754s\u00b9",   state:"কঠিন",  col:6, row:4},
+  {n:25, sym:"Mn", name:"ম্যাঙ্গানিজ",    mass:54.938,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:4, config:"[Ar]3d\u20754s\u00b2",   state:"কঠিন",  col:7, row:4},
+  {n:26, sym:"Fe", name:"লোহা",           mass:55.845,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:4, config:"[Ar]3d\u20764s\u00b2",   state:"কঠিন",  col:8, row:4},
+  {n:27, sym:"Co", name:"কোবাল্ট",        mass:58.933,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:4, config:"[Ar]3d\u20774s\u00b2",   state:"কঠিন",  col:9, row:4},
+  {n:28, sym:"Ni", name:"নিকেল",          mass:58.693,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:4, config:"[Ar]3d\u20784s\u00b2",   state:"কঠিন",  col:10,row:4},
+  {n:29, sym:"Cu", name:"তামা",           mass:63.546,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:4, config:"[Ar]3d\u00b94s\u00b9",   state:"কঠিন",  col:11,row:4},
+  {n:30, sym:"Zn", name:"জিঙ্ক",          mass:65.38,   cat:"transition", bn:"ট্রানজিশন ধাতু",  period:4, config:"[Ar]3d\u00b94s\u00b2",   state:"কঠিন",  col:12,row:4},
+  {n:31, sym:"Ga", name:"গ্যালিয়াম",      mass:69.723,  cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:4, config:"[Ar]3d\u00b94s\u00b24p\u00b9",state:"কঠিন",col:13,row:4},
+  {n:32, sym:"Ge", name:"জার্মেনিয়াম",   mass:72.630,  cat:"metalloid",  bn:"অর্ধধাতু",         period:4, config:"[Ar]3d\u00b94s\u00b24p\u00b2",state:"কঠিন",col:14,row:4},
+  {n:33, sym:"As", name:"আর্সেনিক",       mass:74.922,  cat:"metalloid",  bn:"অর্ধধাতু",         period:4, config:"[Ar]3d\u00b94s\u00b24p\u00b3",state:"কঠিন",col:15,row:4},
+  {n:34, sym:"Se", name:"সেলেনিয়াম",     mass:78.971,  cat:"nonmetal",   bn:"সক্রিয় অধাতু",    period:4, config:"[Ar]3d\u00b94s\u00b24p\u2074",state:"কঠিন",col:16,row:4},
+  {n:35, sym:"Br", name:"ব্রোমিন",        mass:79.904,  cat:"halogen",    bn:"হ্যালোজেন",        period:4, config:"[Ar]3d\u00b94s\u00b24p\u2075",state:"তরল",col:17,row:4},
+  {n:36, sym:"Kr", name:"ক্রিপটন",        mass:83.798,  cat:"noble",      bn:"নিষ্ক্রিয় গ্যাস", period:4, config:"[Ar]3d\u00b94s\u00b24p\u2076",state:"গ্যাস",col:18,row:4},
+  {n:37, sym:"Rb", name:"রুবিডিয়াম",      mass:85.468,  cat:"alkali",     bn:"ক্ষার ধাতু",       period:5, config:"[Kr]5s\u00b9",           state:"কঠিন",  col:1, row:5},
+  {n:38, sym:"Sr", name:"স্ট্রনটিয়াম",   mass:87.62,   cat:"alkaline",   bn:"মৃৎক্ষার ধাতু",   period:5, config:"[Kr]5s\u00b2",           state:"কঠিন",  col:2, row:5},
+  {n:39, sym:"Y",  name:"ইট্রিয়াম",       mass:88.906,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:5, config:"[Kr]4d\u00b95s\u00b2",   state:"কঠিন",  col:3, row:5},
+  {n:40, sym:"Zr", name:"জিরকোনিয়াম",    mass:91.224,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:5, config:"[Kr]4d\u00b25s\u00b2",   state:"কঠিন",  col:4, row:5},
+  {n:41, sym:"Nb", name:"নিওবিয়াম",       mass:92.906,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:5, config:"[Kr]4d\u20744s\u00b9",   state:"কঠিন",  col:5, row:5},
+  {n:42, sym:"Mo", name:"মলিবডেনাম",      mass:95.95,   cat:"transition", bn:"ট্রানজিশন ধাতু",  period:5, config:"[Kr]4d\u20755s\u00b9",   state:"কঠিন",  col:6, row:5},
+  {n:43, sym:"Tc", name:"টেকনিশিয়াম",    mass:98,      cat:"transition", bn:"ট্রানজিশন ধাতু",  period:5, config:"[Kr]4d\u20755s\u00b2",   state:"কঠিন",  col:7, row:5},
+  {n:44, sym:"Ru", name:"রুথেনিয়াম",      mass:101.07,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:5, config:"[Kr]4d\u20775s\u00b9",   state:"কঠিন",  col:8, row:5},
+  {n:45, sym:"Rh", name:"রোডিয়াম",        mass:102.91,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:5, config:"[Kr]4d\u20785s\u00b9",   state:"কঠিন",  col:9, row:5},
+  {n:46, sym:"Pd", name:"প্যালাডিয়াম",    mass:106.42,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:5, config:"[Kr]4d\u00b9\u2070",     state:"কঠিন",  col:10,row:5},
+  {n:47, sym:"Ag", name:"রুপা",            mass:107.87,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:5, config:"[Kr]4d\u00b9\u20705s\u00b9",state:"কঠিন",col:11,row:5},
+  {n:48, sym:"Cd", name:"ক্যাডমিয়াম",     mass:112.41,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:5, config:"[Kr]4d\u00b9\u20705s\u00b2",state:"কঠিন",col:12,row:5},
+  {n:49, sym:"In", name:"ইন্ডিয়াম",        mass:114.82,  cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:5, config:"[Kr]4d\u00b9\u20705s\u00b25p\u00b9",state:"কঠিন",col:13,row:5},
+  {n:50, sym:"Sn", name:"টিন",             mass:118.71,  cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:5, config:"[Kr]4d\u00b9\u20705s\u00b25p\u00b2",state:"কঠিন",col:14,row:5},
+  {n:51, sym:"Sb", name:"অ্যান্টিমনি",    mass:121.76,  cat:"metalloid",  bn:"অর্ধধাতু",         period:5, config:"[Kr]4d\u00b9\u20705s\u00b25p\u00b3",state:"কঠিন",col:15,row:5},
+  {n:52, sym:"Te", name:"টেলুরিয়াম",      mass:127.60,  cat:"metalloid",  bn:"অর্ধধাতু",         period:5, config:"[Kr]4d\u00b9\u20705s\u00b25p\u2074",state:"কঠিন",col:16,row:5},
+  {n:53, sym:"I",  name:"আয়োডিন",         mass:126.90,  cat:"halogen",    bn:"হ্যালোজেন",        period:5, config:"[Kr]4d\u00b9\u20705s\u00b25p\u2075",state:"কঠিন",col:17,row:5},
+  {n:54, sym:"Xe", name:"জেনন",            mass:131.29,  cat:"noble",      bn:"নিষ্ক্রিয় গ্যাস", period:5, config:"[Kr]4d\u00b9\u20705s\u00b25p\u2076",state:"গ্যাস",col:18,row:5},
+  {n:55, sym:"Cs", name:"সিজিয়াম",        mass:132.91,  cat:"alkali",     bn:"ক্ষার ধাতু",       period:6, config:"[Xe]6s\u00b9",           state:"কঠিন",  col:1, row:6},
+  {n:56, sym:"Ba", name:"বেরিয়াম",         mass:137.33,  cat:"alkaline",   bn:"মৃৎক্ষার ধাতু",   period:6, config:"[Xe]6s\u00b2",           state:"কঠিন",  col:2, row:6},
+  {n:72, sym:"Hf", name:"হাফনিয়াম",        mass:178.49,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:6, config:"[Xe]4f\u00b9\u20745d\u00b26s\u00b2",state:"কঠিন",col:4,row:6},
+  {n:73, sym:"Ta", name:"ট্যান্টালাম",     mass:180.95,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:6, config:"[Xe]4f\u00b9\u20745d\u00b36s\u00b2",state:"কঠিন",col:5,row:6},
+  {n:74, sym:"W",  name:"টাংস্টেন",        mass:183.84,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:6, config:"[Xe]4f\u00b9\u20745d\u20746s\u00b2",state:"কঠিন",col:6,row:6},
+  {n:75, sym:"Re", name:"রেনিয়াম",         mass:186.21,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:6, config:"[Xe]4f\u00b9\u20745d\u20756s\u00b2",state:"কঠিন",col:7,row:6},
+  {n:76, sym:"Os", name:"অসমিয়াম",         mass:190.23,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:6, config:"[Xe]4f\u00b9\u20745d\u20766s\u00b2",state:"কঠিন",col:8,row:6},
+  {n:77, sym:"Ir", name:"ইরিডিয়াম",        mass:192.22,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:6, config:"[Xe]4f\u00b9\u20745d\u20776s\u00b2",state:"কঠিন",col:9,row:6},
+  {n:78, sym:"Pt", name:"প্লাটিনাম",        mass:195.08,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:6, config:"[Xe]4f\u00b9\u20745d\u20796s\u00b9",state:"কঠিন",col:10,row:6},
+  {n:79, sym:"Au", name:"সোনা",             mass:196.97,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:6, config:"[Xe]4f\u00b9\u20745d\u00b9\u20706s\u00b9",state:"কঠিন",col:11,row:6},
+  {n:80, sym:"Hg", name:"পারদ",             mass:200.59,  cat:"transition", bn:"ট্রানজিশন ধাতু",  period:6, config:"[Xe]4f\u00b9\u20745d\u00b9\u20706s\u00b2",state:"তরল",col:12,row:6},
+  {n:81, sym:"Tl", name:"থ্যালিয়াম",       mass:204.38,  cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:6, config:"[Xe]4f\u00b9\u20745d\u00b9\u20706s\u00b26p\u00b9",state:"কঠিন",col:13,row:6},
+  {n:82, sym:"Pb", name:"সীসা",             mass:207.20,  cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:6, config:"[Xe]4f\u00b9\u20745d\u00b9\u20706s\u00b26p\u00b2",state:"কঠিন",col:14,row:6},
+  {n:83, sym:"Bi", name:"বিসমাথ",           mass:208.98,  cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:6, config:"[Xe]4f\u00b9\u20745d\u00b9\u20706s\u00b26p\u00b3",state:"কঠিন",col:15,row:6},
+  {n:84, sym:"Po", name:"পোলোনিয়াম",       mass:209,     cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:6, config:"[Xe]4f\u00b9\u20745d\u00b9\u20706s\u00b26p\u2074",state:"কঠিন",col:16,row:6},
+  {n:85, sym:"At", name:"অ্যাস্টাটিন",     mass:210,     cat:"halogen",    bn:"হ্যালোজেন",        period:6, config:"[Xe]4f\u00b9\u20745d\u00b9\u20706s\u00b26p\u2075",state:"কঠিন",col:17,row:6},
+  {n:86, sym:"Rn", name:"রেডন",             mass:222,     cat:"noble",      bn:"নিষ্ক্রিয় গ্যাস", period:6, config:"[Xe]4f\u00b9\u20745d\u00b9\u20706s\u00b26p\u2076",state:"গ্যাস",col:18,row:6},
+  {n:87, sym:"Fr", name:"ফ্রান্সিয়াম",     mass:223,     cat:"alkali",     bn:"ক্ষার ধাতু",       period:7, config:"[Rn]7s\u00b9",           state:"কঠিন",  col:1, row:7},
+  {n:88, sym:"Ra", name:"রেডিয়াম",          mass:226,     cat:"alkaline",   bn:"মৃৎক্ষার ধাতু",   period:7, config:"[Rn]7s\u00b2",           state:"কঠিন",  col:2, row:7},
+  {n:104,sym:"Rf", name:"রাদারফোর্ডিয়াম",  mass:267,     cat:"transition", bn:"ট্রানজিশন ধাতু",  period:7, config:"[Rn]5f\u00b9\u20746d\u00b27s\u00b2",state:"কঠিন",col:4,row:7},
+  {n:105,sym:"Db", name:"ডুবনিয়াম",         mass:268,     cat:"transition", bn:"ট্রানজিশন ধাতু",  period:7, config:"[Rn]5f\u00b9\u20746d\u00b37s\u00b2",state:"কঠিন",col:5,row:7},
+  {n:106,sym:"Sg", name:"সিবোর্গিয়াম",     mass:269,     cat:"transition", bn:"ট্রানজিশন ধাতু",  period:7, config:"[Rn]5f\u00b9\u20746d\u20747s\u00b2",state:"কঠিন",col:6,row:7},
+  {n:107,sym:"Bh", name:"বোহরিয়াম",         mass:270,     cat:"transition", bn:"ট্রানজিশন ধাতু",  period:7, config:"[Rn]5f\u00b9\u20746d\u20757s\u00b2",state:"কঠিন",col:7,row:7},
+  {n:108,sym:"Hs", name:"হাসিয়াম",          mass:270,     cat:"transition", bn:"ট্রানজিশন ধাতু",  period:7, config:"[Rn]5f\u00b9\u20746d\u20767s\u00b2",state:"কঠিন",col:8,row:7},
+  {n:109,sym:"Mt", name:"মেইটনেরিয়াম",     mass:278,     cat:"transition", bn:"ট্রানজিশন ধাতু",  period:7, config:"[Rn]5f\u00b9\u20746d\u20777s\u00b2",state:"কঠিন",col:9,row:7},
+  {n:110,sym:"Ds", name:"ডার্মস্টেডশিয়াম", mass:281,     cat:"transition", bn:"ট্রানজিশন ধাতু",  period:7, config:"[Rn]5f\u00b9\u20746d\u20787s\u00b2",state:"কঠিন",col:10,row:7},
+  {n:111,sym:"Rg", name:"রেন্টজেনিয়াম",    mass:282,     cat:"transition", bn:"ট্রানজিশন ধাতু",  period:7, config:"[Rn]5f\u00b9\u20746d\u20797s\u00b2",state:"কঠিন",col:11,row:7},
+  {n:112,sym:"Cn", name:"কোপার্নিসিয়াম",   mass:285,     cat:"transition", bn:"ট্রানজিশন ধাতু",  period:7, config:"[Rn]5f\u00b9\u20746d\u00b9\u20707s\u00b2",state:"গ্যাস",col:12,row:7},
+  {n:113,sym:"Nh", name:"নিহোনিয়াম",        mass:286,     cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:7, config:"[Rn]5f\u00b9\u20746d\u00b9\u20707s\u00b27p\u00b9",state:"কঠিন",col:13,row:7},
+  {n:114,sym:"Fl", name:"ফ্লেরোভিয়াম",     mass:289,     cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:7, config:"[Rn]5f\u00b9\u20746d\u00b9\u20707s\u00b27p\u00b2",state:"কঠিন",col:14,row:7},
+  {n:115,sym:"Mc", name:"মস্কোভিয়াম",      mass:290,     cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:7, config:"[Rn]5f\u00b9\u20746d\u00b9\u20707s\u00b27p\u00b3",state:"কঠিন",col:15,row:7},
+  {n:116,sym:"Lv", name:"লিভারমোরিয়াম",   mass:293,     cat:"post",       bn:"পোস্ট-ট্রানজিশন", period:7, config:"[Rn]5f\u00b9\u20746d\u00b9\u20707s\u00b27p\u2074",state:"কঠিন",col:16,row:7},
+  {n:117,sym:"Ts", name:"টেনেসিন",           mass:294,     cat:"halogen",    bn:"হ্যালোজেন",        period:7, config:"[Rn]5f\u00b9\u20746d\u00b9\u20707s\u00b27p\u2075",state:"কঠিন",col:17,row:7},
+  {n:118,sym:"Og", name:"ওগানেসন",           mass:294,     cat:"noble",      bn:"নিষ্ক্রিয় গ্যাস", period:7, config:"[Rn]5f\u00b9\u20746d\u00b9\u20707s\u00b27p\u2076",state:"গ্যাস",col:18,row:7},
+  // Lanthanides - row 9
+  {n:57, sym:"La", name:"ল্যান্থানাম",   mass:138.91, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]5d\u00b96s\u00b2",         state:"কঠিন",col:3, row:9},
+  {n:58, sym:"Ce", name:"সেরিয়াম",       mass:140.12, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u00b95d\u00b96s\u00b2", state:"কঠিন",col:4, row:9},
+  {n:59, sym:"Pr", name:"প্রাসিওডিমিয়াম",mass:140.91,cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u00b36s\u00b2",          state:"কঠিন",col:5, row:9},
+  {n:60, sym:"Nd", name:"নিওডিমিয়াম",   mass:144.24, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u20746s\u00b2",          state:"কঠিন",col:6, row:9},
+  {n:61, sym:"Pm", name:"প্রমিথিয়াম",   mass:145,    cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u20756s\u00b2",          state:"কঠিন",col:7, row:9},
+  {n:62, sym:"Sm", name:"সামারিয়াম",     mass:150.36, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u20766s\u00b2",          state:"কঠিন",col:8, row:9},
+  {n:63, sym:"Eu", name:"ইউরোপিয়াম",    mass:151.96, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u20776s\u00b2",          state:"কঠিন",col:9, row:9},
+  {n:64, sym:"Gd", name:"গ্যাডোলিনিয়াম",mass:157.25,cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u20775d\u00b96s\u00b2", state:"কঠিন",col:10,row:9},
+  {n:65, sym:"Tb", name:"টার্বিয়াম",     mass:158.93, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u20796s\u00b2",          state:"কঠিন",col:11,row:9},
+  {n:66, sym:"Dy", name:"ডিসপ্রোসিয়াম", mass:162.50, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u00b9\u20706s\u00b2",    state:"কঠিন",col:12,row:9},
+  {n:67, sym:"Ho", name:"হোলমিয়াম",      mass:164.93, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u00b9\u00b96s\u00b2",    state:"কঠিন",col:13,row:9},
+  {n:68, sym:"Er", name:"আরবিয়াম",       mass:167.26, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u00b9\u00b26s\u00b2",    state:"কঠিন",col:14,row:9},
+  {n:69, sym:"Tm", name:"থুলিয়াম",       mass:168.93, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u00b9\u00b36s\u00b2",    state:"কঠিন",col:15,row:9},
+  {n:70, sym:"Yb", name:"ইটার্বিয়াম",    mass:173.05, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u00b9\u20746s\u00b2",    state:"কঠিন",col:16,row:9},
+  {n:71, sym:"Lu", name:"লুটেশিয়াম",     mass:174.97, cat:"lanthanide",bn:"ল্যান্থানাইড",period:6,config:"[Xe]4f\u00b9\u20745d\u00b96s\u00b2",state:"কঠিন",col:17,row:9},
+  // Actinides - row 10
+  {n:89, sym:"Ac", name:"অ্যাকটিনিয়াম",   mass:227,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]6d\u00b97s\u00b2",          state:"কঠিন",col:3, row:10},
+  {n:90, sym:"Th", name:"থোরিয়াম",         mass:232.04, cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]6d\u00b27s\u00b2",          state:"কঠিন",col:4, row:10},
+  {n:91, sym:"Pa", name:"প্রোটেকটিনিয়াম",  mass:231.04, cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u00b26d\u00b97s\u00b2",  state:"কঠিন",col:5, row:10},
+  {n:92, sym:"U",  name:"ইউরেনিয়াম",       mass:238.03, cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u00b36d\u00b97s\u00b2",  state:"কঠিন",col:6, row:10},
+  {n:93, sym:"Np", name:"নেপচুনিয়াম",      mass:237,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u20746d\u00b97s\u00b2",  state:"কঠিন",col:7, row:10},
+  {n:94, sym:"Pu", name:"প্লুটোনিয়াম",     mass:244,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u20767s\u00b2",          state:"কঠিন",col:8, row:10},
+  {n:95, sym:"Am", name:"আমেরিসিয়াম",      mass:243,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u20777s\u00b2",          state:"কঠিন",col:9, row:10},
+  {n:96, sym:"Cm", name:"কিউরিয়াম",        mass:247,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u20776d\u00b97s\u00b2",  state:"কঠিন",col:10,row:10},
+  {n:97, sym:"Bk", name:"বার্কেলিয়াম",     mass:247,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u20797s\u00b2",          state:"কঠিন",col:11,row:10},
+  {n:98, sym:"Cf", name:"ক্যালিফোর্নিয়াম", mass:251,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u00b9\u20707s\u00b2",    state:"কঠিন",col:12,row:10},
+  {n:99, sym:"Es", name:"আইনস্টেইনিয়াম",  mass:252,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u00b9\u00b97s\u00b2",    state:"কঠিন",col:13,row:10},
+  {n:100,sym:"Fm", name:"ফার্মিয়াম",       mass:257,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u00b9\u00b27s\u00b2",    state:"কঠিন",col:14,row:10},
+  {n:101,sym:"Md", name:"মেন্ডেলিভিয়াম",  mass:258,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u00b9\u00b37s\u00b2",    state:"কঠিন",col:15,row:10},
+  {n:102,sym:"No", name:"নোবেলিয়াম",       mass:259,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u00b9\u20747s\u00b2",    state:"কঠিন",col:16,row:10},
+  {n:103,sym:"Lr", name:"লরেন্সিয়াম",      mass:266,    cat:"actinide",bn:"অ্যাকটিনাইড",period:7,config:"[Rn]5f\u00b9\u20747p\u00b9",    state:"কঠিন",col:17,row:10}
+];
+
+var ptEl=document.getElementById('ptable');
+// 10 rows: 7 main + 1 gap + lanthanides + actinides
+ptEl.style.gridTemplateRows='repeat(10,minmax(36px,1fr))';
+ptEl.style.gridTemplateColumns='repeat(18,minmax(34px,1fr))';
+var cells={};
+for(var row=1;row<=10;row++){
+  for(var col=1;col<=18;col++){
+    var div=document.createElement('div');
+    div.className='elempty';
+    div.style.gridColumn=col;
+    div.style.gridRow=row;
+    // Row 8: gap row - show separator labels
+    if(row===8){
+      if(col===1){
+        div.style.cssText='grid-column:1/3;grid-row:8;display:flex;align-items:center;justify-content:center;font-size:0.42rem;color:var(--light);opacity:0.5;';
+        div.textContent='';
+      } else if(col===3){
+        div.style.cssText='grid-column:3/18;grid-row:8;display:flex;align-items:center;justify-content:center;gap:20px;font-size:0.5rem;color:var(--light);opacity:0.55;border-top:1px dashed rgba(166,77,121,0.2);';
+        div.innerHTML='<span style="color:#26c6da">&#9632; ল্যান্থানাইড (57-71)</span><span style="color:#ff7043">&#9632; অ্যাকটিনাইড (89-103)</span>';
+        ptEl.appendChild(div);
+        break;
+      } else { continue; }
+    }
+    ptEl.appendChild(div);
+    cells[col+','+row]=div;
+  }
+}
+
+// Ref cells for row 6 col 3 and row 7 col 3
+var lnRef=cells['3,6'];
+if(lnRef){lnRef.style.cssText='background:rgba(38,198,218,0.15);border:1px dashed rgba(38,198,218,0.5);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:0.45rem;color:#26c6da;text-align:center;cursor:default;min-height:36px;';lnRef.textContent='57-71';}
+var acRef=cells['3,7'];
+if(acRef){acRef.style.cssText='background:rgba(255,112,67,0.15);border:1px dashed rgba(255,112,67,0.5);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:0.45rem;color:#ff7043;text-align:center;cursor:default;min-height:36px;';acRef.textContent='89-103';}
+
+elements.forEach(function(el){
+  var cell=cells[el.col+','+el.row];
+  if(!cell)return;
+  cell.className='el';
+  cell.style.background=catColor[el.cat]||'#888';
+  cell.style.borderColor='rgba(0,0,0,0.3)';
+  cell.style.color='#fff';
+  cell.innerHTML='<div class="enum">'+el.n+'</div><div class="esym">'+el.sym+'</div><div class="enam">'+el.name+'</div>';
+  (function(e){cell.addEventListener('click',function(){showEl(e);});})(el);
+});
+
+var legEl=document.getElementById('ptlegend');
+legEl.innerHTML='';
+Object.keys(catName).forEach(function(k){
+  var d=document.createElement('div');d.className='legitem';
+  d.innerHTML='<div class="legdot" style="background:'+catColor[k]+'"></div>'+catName[k];
+  legEl.appendChild(d);
+});
+
+function showEl(el){
+  document.getElementById('msym').textContent=el.sym;
+  document.getElementById('mname').textContent=el.name;
+  document.getElementById('msub').textContent='\u09aa\u09be\u09b0\u09ae\u09be\u09a3\u09ac\u09bf\u0995 \u09b8\u0982\u0996\u09cd\u09af\u09be: '+el.n;
+  document.getElementById('mgrid').innerHTML=
+    '<div class="mitem"><div class="mlbl">\u09aa\u09be\u09b0\u09ae\u09be\u09a3\u09ac\u09bf\u0995 \u09ad\u09b0</div><div class="mval">'+el.mass+' u</div></div>'+
+    '<div class="mitem"><div class="mlbl">\u09b6\u09cd\u09b0\u09c7\u09a3\u09bf</div><div class="mval">'+el.bn+'</div></div>'+
+    '<div class="mitem"><div class="mlbl">\u09aa\u09b0\u09cd\u09af\u09be\u09af\u09bc</div><div class="mval">'+el.period+'</div></div>'+
+    '<div class="mitem"><div class="mlbl">\u0985\u09ac\u09b8\u09cd\u09a5\u09be</div><div class="mval">'+el.state+'</div></div>'+
+    '<div class="mitem" style="grid-column:span 2"><div class="mlbl">\u0987\u09b2\u09c7\u0995\u09cd\u099f\u09cd\u09b0\u09a8 \u09ac\u09bf\u09a8\u09cd\u09af\u09be\u09b8</div><div class="mval" style="font-size:0.75rem">'+el.config+'</div></div>';
+  document.getElementById('el-modal').classList.add('open');
+}
+function closeMod(){document.getElementById('el-modal').classList.remove('open');}
+document.getElementById('el-modal').addEventListener('click',function(e){if(e.target===e.currentTarget)closeMod();});
+</script>
+</body>
+</html>
